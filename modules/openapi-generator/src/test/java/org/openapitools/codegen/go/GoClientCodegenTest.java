@@ -438,4 +438,77 @@ public class GoClientCodegenTest {
         TestUtils.assertFileContains(apiPath, defaultArrayString);
         TestUtils.assertFileContains(apiPath, defaultValueString);
     }
+
+    @Test(description = "test that helpers_generics.go is generated with Go 1.18+ generic helpers")
+    public void testHelpersGenericsFileGenerated() throws IOException {
+        File output = Files.createTempDirectory("test").toFile();
+        output.deleteOnExit();
+
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("go")
+                .setInputSpec("src/test/resources/3_0/petstore.yaml")
+                .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
+
+        DefaultGenerator generator = new DefaultGenerator();
+        List<File> files = generator.opts(configurator.toClientOptInput()).generate();
+        files.forEach(File::deleteOnExit);
+
+        // Verify helpers_generics.go is generated
+        Path helpersGenericsPath = Paths.get(output + "/helpers_generics.go");
+        TestUtils.assertFileExists(helpersGenericsPath);
+
+        // Verify it contains the ParameterValue generic constraint
+        TestUtils.assertFileContains(helpersGenericsPath, "type ParameterValue interface");
+
+        // Verify it contains the FormatParameter generic function
+        TestUtils.assertFileContains(helpersGenericsPath, "func FormatParameter[T ParameterValue]");
+
+        // Verify it contains helper functions for arrays
+        TestUtils.assertFileContains(helpersGenericsPath, "func formatStringArray");
+        TestUtils.assertFileContains(helpersGenericsPath, "func formatIntArray");
+    }
+
+    @Test(description = "test that client.go does not import reflect package (uses type switches instead)")
+    public void testClientNoReflectionImport() throws IOException {
+        File output = Files.createTempDirectory("test").toFile();
+        output.deleteOnExit();
+
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("go")
+                .setInputSpec("src/test/resources/3_0/petstore.yaml")
+                .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
+
+        DefaultGenerator generator = new DefaultGenerator();
+        List<File> files = generator.opts(configurator.toClientOptInput()).generate();
+        files.forEach(File::deleteOnExit);
+
+        // Verify client.go does not import reflect
+        Path clientPath = Paths.get(output + "/client.go");
+        TestUtils.assertFileExists(clientPath);
+        TestUtils.assertFileNotContains(clientPath, "\"reflect\"");
+
+        // Verify it uses type switches instead
+        TestUtils.assertFileContains(clientPath, "switch v := obj.(type)");
+    }
+
+    @Test(description = "test that api files do not use reflect for parameter handling")
+    public void testApiNoReflectionUsage() throws IOException {
+        File output = Files.createTempDirectory("test").toFile();
+        output.deleteOnExit();
+
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("go")
+                .setInputSpec("src/test/resources/3_0/petstore.yaml")
+                .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
+
+        DefaultGenerator generator = new DefaultGenerator();
+        List<File> files = generator.opts(configurator.toClientOptInput()).generate();
+        files.forEach(File::deleteOnExit);
+
+        // Verify api_pet.go does not use reflect.TypeOf or reflect.ValueOf
+        Path apiPath = Paths.get(output + "/api_pet.go");
+        TestUtils.assertFileExists(apiPath);
+        TestUtils.assertFileNotContains(apiPath, "reflect.TypeOf");
+        TestUtils.assertFileNotContains(apiPath, "reflect.ValueOf");
+    }
 }

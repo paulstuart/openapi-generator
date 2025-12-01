@@ -16,6 +16,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -26,10 +27,8 @@ import (
 	"golang.org/x/oauth2"
 	{{/hasOAuthMethods}}
 	{{#withAWSV4Signature}}
-	awsv4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
-	"crypto/sha256"
-	"encoding/hex"
+	awsv4 "github.com/aws/aws-sdk-go/aws/signer/v4"
+	awscredentials "github.com/aws/aws-sdk-go/aws/credentials"
 	{{/withAWSV4Signature}}
 )
 
@@ -122,262 +121,123 @@ func contains(haystack []string, needle string) bool {
 	return false
 }
 
-// typeCheckParameter is retained for backward compatibility but type checking
-// is now primarily handled at compile time via Go 1.18+ generics.
-// This function validates that optional parameters are not nil when expected.
+// Verify optional parameters are of the correct type.
 func typeCheckParameter(obj interface{}, expected string, name string) error {
 	// Make sure there is an object.
 	if obj == nil {
 		return nil
 	}
-	// Type checking is handled at compile time via generics.
-	// This function is retained for API compatibility.
+
+	// Check the type is as expected.
+	if reflect.TypeOf(obj).String() != expected {
+		return fmt.Errorf("expected %s to be of type %s but received %s", name, expected, reflect.TypeOf(obj).String())
+	}
 	return nil
 }
 
-// parameterValueToString converts a parameter value to its string representation.
-// Uses type assertions instead of reflection for better performance.
-func parameterValueToString(obj interface{}, key string) string {
-	if obj == nil {
+func parameterValueToString( obj interface{}, key string ) string {
+	if reflect.TypeOf(obj).Kind() != reflect.Ptr {
+		return fmt.Sprintf("%v", obj)
+	}
+	var param,ok = obj.(MappedNullable)
+	if !ok {
 		return ""
 	}
-
-	// Handle oneOf/anyOf types with GetActualInstanceValue
-	if actualObj, ok := obj.(interface{ GetActualInstanceValue() interface{} }); ok {
-		return fmt.Sprintf("%v", actualObj.GetActualInstanceValue())
+	dataMap,err := param.ToMap()
+	if err != nil {
+		return ""
 	}
-
-	// Handle MappedNullable types (pointer structs with ToMap method)
-	if param, ok := obj.(MappedNullable); ok {
-		dataMap, err := param.ToMap()
-		if err != nil {
-			return ""
-		}
-		return fmt.Sprintf("%v", dataMap[key])
-	}
-
-	// For all other types, use fmt.Sprint which handles primitives and strings
-	return fmt.Sprintf("%v", obj)
+	return fmt.Sprintf("%v", dataMap[key])
 }
 
 // parameterAddToHeaderOrQuery adds the provided object to the request header or url query
-// supporting deep object syntax. Uses type switches instead of reflection for 3-12x better performance.
+// supporting deep object syntax
 func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix string, obj interface{}, style string, collectionType string) {
-	if obj == nil {
-		setParameterValue(headerOrQueryParams, keyPrefix, "null", collectionType)
-		return
+	var v = reflect.ValueOf(obj)
+	var value = ""
+	if v == reflect.ValueOf(nil) {
+		value = "null"
+	} else {
+		switch v.Kind() {
+			case reflect.Invalid:
+				value = "invalid"
+
+			case reflect.Struct:
+				if t,ok := obj.(MappedNullable); ok {
+					dataMap,err := t.ToMap()
+					if err != nil {
+						return
+					}
+					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, dataMap, style, collectionType)
+					return
+				}
+				if t, ok := obj.(time.Time); ok {
+					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, t.Format(time.RFC3339Nano), style, collectionType)
+					return
+				}
+				value = v.Type().String() + " value"
+			case reflect.Slice:
+				var indValue = reflect.ValueOf(obj)
+				if indValue == reflect.ValueOf(nil) {
+					return
+				}
+				var lenIndValue = indValue.Len()
+				for i:=0;i<lenIndValue;i++ {
+					var arrayValue = indValue.Index(i)
+					var keyPrefixForCollectionType = keyPrefix
+					if style == "deepObject" {
+						keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
+					}
+					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, arrayValue.Interface(), style, collectionType)
+				}
+				return
+
+			case reflect.Map:
+				var indValue = reflect.ValueOf(obj)
+				if indValue == reflect.ValueOf(nil) {
+					return
+				}
+				iter := indValue.MapRange()
+				for iter.Next() {
+					k,v := iter.Key(), iter.Value()
+					parameterAddToHeaderOrQuery(headerOrQueryParams, fmt.Sprintf("%s[%s]", keyPrefix, k.String()), v.Interface(), style, collectionType)
+				}
+				return
+
+			case reflect.Interface:
+				fallthrough
+			case reflect.Ptr:
+				parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, v.Elem().Interface(), style, collectionType)
+				return
+
+			case reflect.Int, reflect.Int8, reflect.Int16,
+				reflect.Int32, reflect.Int64:
+				value = strconv.FormatInt(v.Int(), 10)
+			case reflect.Uint, reflect.Uint8, reflect.Uint16,
+				reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+				value = strconv.FormatUint(v.Uint(), 10)
+			case reflect.Float32, reflect.Float64:
+				value = strconv.FormatFloat(v.Float(), 'g', -1, 32)
+			case reflect.Bool:
+				value = strconv.FormatBool(v.Bool())
+			case reflect.String:
+				value = v.String()
+			default:
+				value = v.Type().String() + " value"
+		}
 	}
 
-	// Use type switch for efficient type handling without reflection
-	switch v := obj.(type) {
-	// Handle MappedNullable structs (model types with ToMap method)
-	case MappedNullable:
-		dataMap, err := v.ToMap()
-		if err != nil {
-			return
-		}
-		parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, dataMap, style, collectionType)
-		return
-
-	// Handle time.Time
-	case time.Time:
-		setParameterValue(headerOrQueryParams, keyPrefix, v.Format(time.RFC3339Nano), collectionType)
-		return
-
-	case *time.Time:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, v.Format(time.RFC3339Nano), collectionType)
-		return
-
-	// Primitive types - use FormatParameter from helpers_generics.go
-	case string:
-		setParameterValue(headerOrQueryParams, keyPrefix, v, collectionType)
-		return
-	case *string:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, *v, collectionType)
-		return
-	case int:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.Itoa(v), collectionType)
-		return
-	case *int:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.Itoa(*v), collectionType)
-		return
-	case int32:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatInt(int64(v), 10), collectionType)
-		return
-	case *int32:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatInt(int64(*v), 10), collectionType)
-		return
-	case int64:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatInt(v, 10), collectionType)
-		return
-	case *int64:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatInt(*v, 10), collectionType)
-		return
-	case uint:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatUint(uint64(v), 10), collectionType)
-		return
-	case *uint:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatUint(uint64(*v), 10), collectionType)
-		return
-	case uint32:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatUint(uint64(v), 10), collectionType)
-		return
-	case *uint32:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatUint(uint64(*v), 10), collectionType)
-		return
-	case uint64:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatUint(v, 10), collectionType)
-		return
-	case *uint64:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatUint(*v, 10), collectionType)
-		return
-	case float32:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatFloat(float64(v), 'g', -1, 32), collectionType)
-		return
-	case *float32:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatFloat(float64(*v), 'g', -1, 32), collectionType)
-		return
-	case float64:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatFloat(v, 'g', -1, 64), collectionType)
-		return
-	case *float64:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatFloat(*v, 'g', -1, 64), collectionType)
-		return
-	case bool:
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatBool(v), collectionType)
-		return
-	case *bool:
-		if v == nil {
-			return
-		}
-		setParameterValue(headerOrQueryParams, keyPrefix, strconv.FormatBool(*v), collectionType)
-		return
-
-	// Slice types - iterate and add each element
-	case []string:
-		for i, item := range v {
-			keyPrefixForCollectionType := keyPrefix
-			if style == "deepObject" {
-				keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-			}
-			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, item, style, collectionType)
-		}
-		return
-	case []int:
-		for i, item := range v {
-			keyPrefixForCollectionType := keyPrefix
-			if style == "deepObject" {
-				keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-			}
-			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, item, style, collectionType)
-		}
-		return
-	case []int32:
-		for i, item := range v {
-			keyPrefixForCollectionType := keyPrefix
-			if style == "deepObject" {
-				keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-			}
-			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, item, style, collectionType)
-		}
-		return
-	case []int64:
-		for i, item := range v {
-			keyPrefixForCollectionType := keyPrefix
-			if style == "deepObject" {
-				keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-			}
-			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, item, style, collectionType)
-		}
-		return
-	case []float32:
-		for i, item := range v {
-			keyPrefixForCollectionType := keyPrefix
-			if style == "deepObject" {
-				keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-			}
-			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, item, style, collectionType)
-		}
-		return
-	case []float64:
-		for i, item := range v {
-			keyPrefixForCollectionType := keyPrefix
-			if style == "deepObject" {
-				keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-			}
-			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, item, style, collectionType)
-		}
-		return
-	case []interface{}:
-		for i, item := range v {
-			keyPrefixForCollectionType := keyPrefix
-			if style == "deepObject" {
-				keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-			}
-			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, item, style, collectionType)
-		}
-		return
-
-	// Map type - iterate over keys
-	case map[string]interface{}:
-		for k, val := range v {
-			parameterAddToHeaderOrQuery(headerOrQueryParams, fmt.Sprintf("%s[%s]", keyPrefix, k), val, style, collectionType)
-		}
-		return
-	case map[string]string:
-		for k, val := range v {
-			parameterAddToHeaderOrQuery(headerOrQueryParams, fmt.Sprintf("%s[%s]", keyPrefix, k), val, style, collectionType)
-		}
-		return
-
-	default:
-		// Fallback for unknown types - use fmt.Sprint
-		setParameterValue(headerOrQueryParams, keyPrefix, fmt.Sprint(obj), collectionType)
-		return
-	}
-}
-
-// setParameterValue is a helper function that adds a value to either url.Values or map[string]string
-func setParameterValue(headerOrQueryParams interface{}, key string, value string, collectionType string) {
 	switch valuesMap := headerOrQueryParams.(type) {
-	case url.Values:
-		if collectionType == "csv" && valuesMap.Get(key) != "" {
-			valuesMap.Set(key, valuesMap.Get(key)+","+value)
-		} else {
-			valuesMap.Add(key, value)
-		}
-	case map[string]string:
-		valuesMap[key] = value
+		case url.Values:
+			if collectionType == "csv" && valuesMap.Get(keyPrefix) != "" {
+				valuesMap.Set(keyPrefix, valuesMap.Get(keyPrefix) + "," + value)
+			} else {
+				valuesMap.Add(keyPrefix, value)
+			}
+			break
+		case map[string]string:
+			valuesMap[keyPrefix] = value
+			break
 	}
 }
 
@@ -594,10 +454,13 @@ func (c *APIClient) prepareRequest(
 		{{#withAWSV4Signature}}
 		// AWS Signature v4 Authentication
 		if auth, ok := ctx.Value(ContextAWSv4).(AWSv4); ok {
-			credsProvider := awscredentials.NewStaticCredentialsProvider(auth.AccessKey, auth.SecretKey, auth.SessionToken)
-			creds, err := credsProvider.Retrieve(ctx)
-			if err != nil {
-				return nil, err
+			creds := awscredentials.NewStaticCredentials(auth.AccessKey, auth.SecretKey, auth.SessionToken)
+			signer := awsv4.NewSigner(creds)
+			var reader *strings.Reader
+			if body == nil {
+				reader = strings.NewReader("")
+			} else {
+				reader = strings.NewReader(body.String())
 			}
 
 			// Define default values for region and service to maintain backward compatibility
@@ -610,22 +473,8 @@ func (c *APIClient) prepareRequest(
 				service = "oapi"
 			}
 
-			// Compute payload hash from the request body
-			var payloadHash string
-			if body == nil {
-				// Empty body
-				hash := sha256.Sum256([]byte(""))
-				payloadHash = hex.EncodeToString(hash[:])
-			} else {
-				// Hash the actual body content
-				bodyBytes := []byte(body.String())
-				hash := sha256.Sum256(bodyBytes)
-				payloadHash = hex.EncodeToString(hash[:])
-			}
-
-			// Sign the request with the computed payload hash
-			signer := awsv4.NewSigner()
-			err = signer.SignHTTP(ctx, creds, localVarRequest, payloadHash, service, region, time.Now())
+			timestamp := time.Now()
+			_, err := signer.Sign(localVarRequest, reader, service, region, timestamp)
 			if err != nil {
 				return nil, err
 			}
@@ -777,24 +626,25 @@ func setBody(body interface{}, contentType string) (bodyBuf *bytes.Buffer, err e
 	return bodyBuf, nil
 }
 
-// detectContentType method is used to figure out `Request.Body` content type for request header.
-// Uses type assertions instead of reflection for better performance.
+// detectContentType method is used to figure out `Request.Body` content type for request header
 func detectContentType(body interface{}) string {
-	// Use type switch instead of reflection for efficient type detection
-	switch v := body.(type) {
-	case string:
-		return "text/plain; charset=utf-8"
-	case *string:
-		return "text/plain; charset=utf-8"
-	case []byte:
-		return http.DetectContentType(v)
-	// Slice types default to JSON
-	case []string, []int, []int32, []int64, []float32, []float64, []interface{}:
-		return "application/json; charset=utf-8"
+	contentType := "text/plain; charset=utf-8"
+	kind := reflect.TypeOf(body).Kind()
+
+	switch kind {
+	case reflect.Struct, reflect.Map, reflect.Ptr:
+		contentType = "application/json; charset=utf-8"
+	case reflect.String:
+		contentType = "text/plain; charset=utf-8"
 	default:
-		// For structs, maps, pointers, and other complex types, default to JSON
-		return "application/json; charset=utf-8"
+		if b, ok := body.([]byte); ok {
+			contentType = http.DetectContentType(b)
+		} else if kind == reflect.Slice {
+			contentType = "application/json; charset=utf-8"
+		}
 	}
+
+	return contentType
 }
 
 // Ripped from https://github.com/gregjones/httpcache/blob/master/httpcache.go
@@ -873,41 +723,20 @@ func (e GenericOpenAPIError) Model() interface{} {
 	return e.model
 }
 
-// RFC7807Error is an interface for RFC 7807 Problem Details error responses.
-// Models implementing this interface will have their title and detail fields
-// extracted for error formatting.
-type RFC7807Error interface {
-	GetTitle() string
-	GetDetail() string
-}
-
-// formatErrorMessage formats error message using title and detail when model implements RFC 7807.
-// Uses interface-based approach instead of reflection for better performance.
+// format error message using title and detail when model implements rfc7807
 func formatErrorMessage(status string, v interface{}) string {
-	// Try to use RFC7807Error interface first (preferred approach)
-	if rfc7807, ok := v.(RFC7807Error); ok {
-		title := rfc7807.GetTitle()
-		detail := rfc7807.GetDetail()
-		if title != "" {
-			if detail != "" {
-				return strings.TrimSpace(fmt.Sprintf("%s %s (%s)", status, title, detail))
-			}
-			return strings.TrimSpace(fmt.Sprintf("%s %s", status, title))
+	str := ""
+	metaValue := reflect.ValueOf(v).Elem()
+
+	if metaValue.Kind() == reflect.Struct {
+		field := metaValue.FieldByName("Title")
+		if field != (reflect.Value{}) {
+			str = fmt.Sprintf("%s", field.Interface())
 		}
-	}
 
-	// Fallback: try to extract Title and Detail from struct via getter methods
-	// This provides backward compatibility with existing generated models
-	type titleGetter interface{ GetTitle() string }
-	type detailGetter interface{ GetDetail() string }
-
-	var str string
-	if tg, ok := v.(titleGetter); ok {
-		str = tg.GetTitle()
-	}
-	if dg, ok := v.(detailGetter); ok {
-		if detail := dg.GetDetail(); detail != "" {
-			str = fmt.Sprintf("%s (%s)", str, detail)
+		field = metaValue.FieldByName("Detail")
+		if field != (reflect.Value{}) {
+			str = fmt.Sprintf("%s (%s)", str, field.Interface())
 		}
 	}
 

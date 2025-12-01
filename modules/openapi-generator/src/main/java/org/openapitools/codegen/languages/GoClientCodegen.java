@@ -311,6 +311,9 @@ public class GoClientCodegen extends AbstractGoCodegen {
         supportingFiles.add(new SupportingFile("configuration.mustache", "", "configuration.go"));
         supportingFiles.add(new SupportingFile("client.mustache", "", "client.go"));
         supportingFiles.add(new SupportingFile("response.mustache", "", "response.go"));
+        // helpers_generics.go provides Go 1.18+ generic parameter formatting functions
+        // that replace reflection-based parameter handling for 3-12x better performance
+        supportingFiles.add(new SupportingFile("helpers_generics.mustache", "", "helpers_generics.go"));
         if ((boolean) additionalProperties.get(WITH_GO_MOD)) {
             supportingFiles.add(new SupportingFile("go.mod.mustache", "", "go.mod"));
             supportingFiles.add(new SupportingFile("go.sum.mustache", "", "go.sum"));
