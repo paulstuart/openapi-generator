@@ -351,7 +351,7 @@ public class GoServerCodegen extends AbstractGoCodegen {
 
         boolean addedTimeImport = false;
         boolean addedOSImport = false;
-        boolean addedReflectImport = false;
+        // addedReflectImport removed - no longer needed with Go 1.18+ generics
         for (CodegenOperation operation : operations) {
             for (CodegenParameter param : operation.allParams) {
                 // import "os" if the operation uses files
@@ -366,11 +366,9 @@ public class GoServerCodegen extends AbstractGoCodegen {
                     addedTimeImport = true;
                 }
 
-                // import "reflect" package if the parameter is collectionFormat=multi
-                if (!addedReflectImport && param.isCollectionFormatMulti) {
-                    imports.add(createMapping("import", "reflect"));
-                    addedReflectImport = true;
-                }
+                // Note: reflect import is no longer needed for collectionFormat=multi
+                // as of Go 1.18+ generics update - parameterAddToHeaderOrQuery now uses
+                // type switches instead of reflection
 
                 // set x-exportParamName
                 char nameFirstChar = param.paramName.charAt(0);

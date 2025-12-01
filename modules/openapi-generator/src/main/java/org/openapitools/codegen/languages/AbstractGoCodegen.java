@@ -538,7 +538,7 @@ public abstract class AbstractGoCodegen extends DefaultCodegen implements Codege
 
         boolean addedTimeImport = false;
         boolean addedOSImport = false;
-        boolean addedReflectImport = false;
+        // addedReflectImport removed - no longer needed with Go 1.18+ generics
         for (CodegenOperation operation : operations) {
             // import "os" if the operation uses files
             if (!addedOSImport && "*os.File".equals(operation.returnType)) {
@@ -571,13 +571,9 @@ public abstract class AbstractGoCodegen extends DefaultCodegen implements Codege
                 }
             }
 
-            for (CodegenParameter param : operation.queryParams) {
-                // import "reflect" package if the parameter is collectionFormat=multi
-                if (!addedReflectImport && param.isCollectionFormatMulti) {
-                    imports.add(createMapping("import", "reflect"));
-                    addedReflectImport = true;
-                }
-            }
+            // Note: reflect import is no longer needed for collectionFormat=multi
+            // as of Go 1.18+ generics update - parameterAddToHeaderOrQuery now uses
+            // type switches instead of reflection
 
             setExportParameterName(operation.queryParams);
             setExportParameterName(operation.formParams);
@@ -639,7 +635,7 @@ public abstract class AbstractGoCodegen extends DefaultCodegen implements Codege
 
         boolean addedTimeImport = false;
         boolean addedOSImport = false;
-        boolean addedReflectImport = false;
+        // addedReflectImport removed - no longer needed with Go 1.18+ generics
         for (CodegenOperation operation : operations) {
             // import "os" if the operation uses files
             if (!addedOSImport && "*os.File".equals(operation.returnType)) {
@@ -659,11 +655,9 @@ public abstract class AbstractGoCodegen extends DefaultCodegen implements Codege
                     addedTimeImport = true;
                 }
 
-                // import "reflect" package if the parameter is collectionFormat=multi
-                if (!addedReflectImport && param.isCollectionFormatMulti) {
-                    imports.add(createMapping("import", "reflect"));
-                    addedReflectImport = true;
-                }
+                // Note: reflect import is no longer needed for collectionFormat=multi
+                // as of Go 1.18+ generics update - parameterAddToHeaderOrQuery now uses
+                // type switches instead of reflection
 
                 // set x-exportParamName
                 char nameFirstChar = param.paramName.charAt(0);

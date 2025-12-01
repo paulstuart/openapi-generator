@@ -1738,15 +1738,8 @@ func (a *FakeAPIService) TestEnumParametersExecute(r ApiTestEnumParametersReques
 	localVarFormParams := url.Values{}
 
 	if r.enumQueryStringArray != nil {
-		t := *r.enumQueryStringArray
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "enum_query_string_array", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "enum_query_string_array", t, "form", "multi")
-		}
+		// Handle collection format "multi" - parameterAddToHeaderOrQuery handles slices natively without reflection
+		parameterAddToHeaderOrQuery(localVarQueryParams, "enum_query_string_array", *r.enumQueryStringArray, "form", "multi")
 	}
 	if r.enumQueryString != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "enum_query_string", r.enumQueryString, "form", "")
@@ -2576,31 +2569,13 @@ func (a *FakeAPIService) TestQueryParameterCollectionFormatExecute(r ApiTestQuer
 		return nil, reportError("context is required and must be specified")
 	}
 
-	{
-		t := *r.pipe
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "pipe", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "pipe", t, "form", "multi")
-		}
-	}
+	// Handle collection format "multi" - parameterAddToHeaderOrQuery handles slices natively without reflection
+	parameterAddToHeaderOrQuery(localVarQueryParams, "pipe", *r.pipe, "form", "multi")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "ioutil", r.ioutil, "form", "csv")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "http", r.http, "spaceDelimited", "ssv")
 	parameterAddToHeaderOrQuery(localVarQueryParams, "url", r.url, "form", "csv")
-	{
-		t := *r.context
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "context", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "context", t, "form", "multi")
-		}
-	}
+	// Handle collection format "multi" - parameterAddToHeaderOrQuery handles slices natively without reflection
+	parameterAddToHeaderOrQuery(localVarQueryParams, "context", *r.context, "form", "multi")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -2809,17 +2784,8 @@ func (a *FakeAPIService) TestUniqueItemsHeaderAndQueryParameterCollectionFormatE
 		return localVarReturnValue, nil, reportError("headerUnique is required and must be specified")
 	}
 
-	{
-		t := *r.queryUnique
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "queryUnique", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "queryUnique", t, "form", "multi")
-		}
-	}
+	// Handle collection format "multi" - parameterAddToHeaderOrQuery handles slices natively without reflection
+	parameterAddToHeaderOrQuery(localVarQueryParams, "queryUnique", *r.queryUnique, "form", "multi")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

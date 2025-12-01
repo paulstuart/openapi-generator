@@ -95,6 +95,7 @@ docs/Zebra.md
 git_push.sh
 go.mod
 go.sum
+helpers_generics.go
 model_200_response.go
 model__foo_get_default_response.go
 model__special_model_name_.go
