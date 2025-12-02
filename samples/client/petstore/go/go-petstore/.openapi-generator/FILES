@@ -64,6 +64,7 @@ docs/XmlItem.md
 git_push.sh
 go.mod
 go.sum
+helpers_generics.go
 model_200_response.go
 model_additional_properties_any_type.go
 model_additional_properties_array.go

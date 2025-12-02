@@ -16,6 +16,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -172,6 +173,12 @@ func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix stri
 	switch v := obj.(type) {
 	// Handle MappedNullable structs (model types with ToMap method)
 	case MappedNullable:
+		// Check for nil pointer before calling ToMap to prevent panic
+		// This can happen when a pointer to a struct (e.g., *Category) is nil
+		// but still matches the MappedNullable interface
+		if IsNil(v) {
+			return
+		}
 		dataMap, err := v.ToMap()
 		if err != nil {
 			return
@@ -348,6 +355,43 @@ func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix stri
 		}
 		return
 
+	// Pointer to slice types - dereference and recurse if not nil
+	case *[]string:
+		if v != nil {
+			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, *v, style, collectionType)
+		}
+		return
+	case *[]int:
+		if v != nil {
+			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, *v, style, collectionType)
+		}
+		return
+	case *[]int32:
+		if v != nil {
+			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, *v, style, collectionType)
+		}
+		return
+	case *[]int64:
+		if v != nil {
+			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, *v, style, collectionType)
+		}
+		return
+	case *[]float32:
+		if v != nil {
+			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, *v, style, collectionType)
+		}
+		return
+	case *[]float64:
+		if v != nil {
+			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, *v, style, collectionType)
+		}
+		return
+	case *[]interface{}:
+		if v != nil {
+			parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, *v, style, collectionType)
+		}
+		return
+
 	// Map type - iterate over keys
 	case map[string]interface{}:
 		for k, val := range v {
@@ -361,7 +405,20 @@ func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix stri
 		return
 
 	default:
-		// Fallback for unknown types - use fmt.Sprint
+		// Fallback: use reflection for slices of custom types (e.g., []Tag, []Category)
+		// This is necessary because we can't enumerate all possible struct slice types at compile time
+		rv := reflect.ValueOf(obj)
+		if rv.Kind() == reflect.Slice {
+			for i := 0; i < rv.Len(); i++ {
+				keyPrefixForCollectionType := keyPrefix
+				if style == "deepObject" {
+					keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
+				}
+				parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, rv.Index(i).Interface(), style, collectionType)
+			}
+			return
+		}
+		// For non-slice types, use fmt.Sprint
 		setParameterValue(headerOrQueryParams, keyPrefix, fmt.Sprint(obj), collectionType)
 		return
 	}

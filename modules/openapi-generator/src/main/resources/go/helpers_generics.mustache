@@ -3,6 +3,7 @@ package {{packageName}}
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -243,4 +244,86 @@ func OptionalParameter[T ParameterValue](value *T, style string) string {
 		return ""
 	}
 	return FormatParameter(*value, style)
+}
+
+// ============================================================================
+// Generic Parameter Functions
+// These use Go 1.18+ generics to handle any ParameterValue type.
+// ============================================================================
+
+// AddQueryParam adds any ParameterValue type to query parameters.
+// Uses generics for compile-time type safety without reflection.
+func AddQueryParam[T ParameterValue](params url.Values, key string, value T) {
+	params.Add(key, FormatParameter(value, ""))
+}
+
+// SetHeader sets any ParameterValue type as a header value.
+// Uses generics for compile-time type safety without reflection.
+func SetHeader[T ParameterValue](headers map[string]string, key string, value T) {
+	headers[key] = FormatParameter(value, "")
+}
+
+// SetHeaderSlice sets a header with a slice of values joined by comma.
+// Uses generics for compile-time type safety without reflection.
+func SetHeaderSlice[T ParameterValue](headers map[string]string, key string, values []T) {
+	if len(values) == 0 {
+		return
+	}
+	headers[key] = strings.Join(ToStringSlice(values), ",")
+}
+
+// AddFormParam adds any ParameterValue type to form parameters.
+// Uses generics for compile-time type safety without reflection.
+func AddFormParam[T ParameterValue](params url.Values, key string, value T) {
+	params.Add(key, FormatParameter(value, ""))
+}
+
+// ============================================================================
+// Array Parameter Functions (with collection format support)
+// These handle slice types with OpenAPI collection formats (csv, ssv, tsv, pipes, multi).
+// ============================================================================
+
+// joinWithDelimiter joins string values with the appropriate collection format delimiter
+func joinWithDelimiter(values []string, collectionFormat string) string {
+	switch collectionFormat {
+	case "csv", "":
+		return strings.Join(values, ",")
+	case "ssv":
+		return strings.Join(values, " ")
+	case "tsv":
+		return strings.Join(values, "\t")
+	case "pipes":
+		return strings.Join(values, "|")
+	default:
+		return strings.Join(values, ",")
+	}
+}
+
+// AddQueryParamSlice adds a string slice to query parameters with collection format handling.
+// For "multi" format, each value is added as a separate query parameter.
+// For other formats (csv, ssv, tsv, pipes), values are joined with the appropriate delimiter.
+func AddQueryParamSlice(params url.Values, key string, values []string, collectionFormat string) {
+	if len(values) == 0 {
+		return
+	}
+	if collectionFormat == "multi" {
+		for _, v := range values {
+			params.Add(key, v)
+		}
+	} else {
+		params.Add(key, joinWithDelimiter(values, collectionFormat))
+	}
+}
+
+// ToStringSlice converts a slice of ParameterValue types to a string slice.
+// This is useful for array query parameters that need collection format handling.
+func ToStringSlice[T ParameterValue](values []T) []string {
+	if len(values) == 0 {
+		return nil
+	}
+	result := make([]string, len(values))
+	for i, v := range values {
+		result[i] = FormatParameter(v, "")
+	}
+	return result
 }

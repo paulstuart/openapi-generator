@@ -331,17 +331,55 @@ func (v *NullableTime) UnmarshalJSON(src []byte) error {
 }
 
 // IsNil checks if an input is nil
+// Uses type switch to avoid reflection for common types used in generated code
 func IsNil(i interface{}) bool {
 	if i == nil {
 		return true
 	}
-	switch reflect.TypeOf(i).Kind() {
-	case reflect.Chan, reflect.Func, reflect.Map, reflect.Ptr, reflect.UnsafePointer, reflect.Interface, reflect.Slice:
-		return reflect.ValueOf(i).IsNil()
-	case reflect.Array:
-		return reflect.ValueOf(i).IsZero()
+	switch v := i.(type) {
+	case *bool:
+		return v == nil
+	case *int:
+		return v == nil
+	case *int32:
+		return v == nil
+	case *int64:
+		return v == nil
+	case *float32:
+		return v == nil
+	case *float64:
+		return v == nil
+	case *string:
+		return v == nil
+	case *time.Time:
+		return v == nil
+	case *map[string]interface{}:
+		return v == nil
+	case []string:
+		return v == nil
+	case []int:
+		return v == nil
+	case []int32:
+		return v == nil
+	case []int64:
+		return v == nil
+	case []float32:
+		return v == nil
+	case []float64:
+		return v == nil
+	case []interface{}:
+		return v == nil
+	case map[string]interface{}:
+		return v == nil
+	case map[string]string:
+		return v == nil
+	default:
+		// For interfaces that might contain nil pointers to structs (like MappedNullable),
+		// we need to use reflect to check if the underlying value is nil.
+		// This handles cases like (*Category)(nil) passed as MappedNullable interface.
+		rv := reflect.ValueOf(i)
+		return rv.Kind() == reflect.Ptr && rv.IsNil()
 	}
-	return false
 }
 
 type MappedNullable interface {

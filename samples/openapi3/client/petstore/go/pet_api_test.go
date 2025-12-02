@@ -42,13 +42,18 @@ func TestAddPet(t *testing.T) {
 }
 
 func TestFindPetsByStatusWithMissingParam(t *testing.T) {
-	_, r, err := client.PetAPI.FindPetsByStatus(context.Background()).Status(nil).Execute()
+	// With the removal of pointer-to-slice types, required array parameters
+	// are now validated client-side with len() == 0 check.
+	// Passing nil or empty slice for a required param should return an error.
+	_, _, err := client.PetAPI.FindPetsByStatus(context.Background()).Status(nil).Execute()
 
-	if err != nil {
-		t.Fatalf("Error while testing TestFindPetsByStatusWithMissingParam: %v", err)
+	if err == nil {
+		t.Fatal("Expected error when calling FindPetsByStatus with nil/empty status")
 	}
-	if r.StatusCode != 200 {
-		t.Log(r)
+	// Verify it's the expected validation error
+	expectedMsg := "status is required and must be specified"
+	if err.Error() != expectedMsg {
+		t.Fatalf("Expected error message '%s', got '%s'", expectedMsg, err.Error())
 	}
 }
 

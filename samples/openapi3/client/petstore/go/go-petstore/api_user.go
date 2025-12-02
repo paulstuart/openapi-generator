@@ -238,12 +238,12 @@ func (a *UserAPIService) CreateUserExecute(r ApiCreateUserRequest) (*http.Respon
 type ApiCreateUsersWithArrayInputRequest struct {
 	ctx context.Context
 	ApiService UserAPI
-	user *[]User
+	user []User
 }
 
 // List of user object
 func (r ApiCreateUsersWithArrayInputRequest) User(user []User) ApiCreateUsersWithArrayInputRequest {
-	r.user = &user
+	r.user = user
 	return r
 }
 
@@ -284,7 +284,7 @@ func (a *UserAPIService) CreateUsersWithArrayInputExecute(r ApiCreateUsersWithAr
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.user == nil {
+	if len(r.user) == 0 {
 		return nil, reportError("user is required and must be specified")
 	}
 
@@ -338,12 +338,12 @@ func (a *UserAPIService) CreateUsersWithArrayInputExecute(r ApiCreateUsersWithAr
 type ApiCreateUsersWithListInputRequest struct {
 	ctx context.Context
 	ApiService UserAPI
-	user *[]User
+	user []User
 }
 
 // List of user object
 func (r ApiCreateUsersWithListInputRequest) User(user []User) ApiCreateUsersWithListInputRequest {
-	r.user = &user
+	r.user = user
 	return r
 }
 
@@ -384,7 +384,7 @@ func (a *UserAPIService) CreateUsersWithListInputExecute(r ApiCreateUsersWithLis
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.user == nil {
+	if len(r.user) == 0 {
 		return nil, reportError("user is required and must be specified")
 	}
 
@@ -695,8 +695,8 @@ func (a *UserAPIService) LoginUserExecute(r ApiLoginUserRequest) (string, *http.
 		return localVarReturnValue, nil, reportError("password is required and must be specified")
 	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "username", r.username, "form", "")
-	parameterAddToHeaderOrQuery(localVarQueryParams, "password", r.password, "form", "")
+	AddQueryParam(localVarQueryParams, "username", *r.username)
+	AddQueryParam(localVarQueryParams, "password", *r.password)
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 

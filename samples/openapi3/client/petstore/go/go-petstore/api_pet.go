@@ -328,7 +328,7 @@ func (a *PetAPIService) DeletePetExecute(r ApiDeletePetRequest) (*http.Response,
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.apiKey != nil {
-		parameterAddToHeaderOrQuery(localVarHeaderParams, "api_key", r.apiKey, "simple", "")
+		SetHeader(localVarHeaderParams, "api_key", *r.apiKey)
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -361,13 +361,13 @@ func (a *PetAPIService) DeletePetExecute(r ApiDeletePetRequest) (*http.Response,
 type ApiFindPetsByStatusRequest struct {
 	ctx context.Context
 	ApiService PetAPI
-	status *[]string
+	status []string
 }
 
 // Status values that need to be considered for filter
 // Deprecated
 func (r ApiFindPetsByStatusRequest) Status(status []string) ApiFindPetsByStatusRequest {
-	r.status = &status
+	r.status = status
 	return r
 }
 
@@ -410,11 +410,11 @@ func (a *PetAPIService) FindPetsByStatusExecute(r ApiFindPetsByStatusRequest) ([
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.status == nil {
+	if len(r.status) == 0 {
 		return localVarReturnValue, nil, reportError("status is required and must be specified")
 	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "status", r.status, "form", "csv")
+	AddQueryParamSlice(localVarQueryParams, "status", ToStringSlice(r.status), "csv")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -472,12 +472,12 @@ func (a *PetAPIService) FindPetsByStatusExecute(r ApiFindPetsByStatusRequest) ([
 type ApiFindPetsByTagsRequest struct {
 	ctx context.Context
 	ApiService PetAPI
-	tags *[]string
+	tags []string
 }
 
 // Tags to filter by
 func (r ApiFindPetsByTagsRequest) Tags(tags []string) ApiFindPetsByTagsRequest {
-	r.tags = &tags
+	r.tags = tags
 	return r
 }
 
@@ -523,11 +523,11 @@ func (a *PetAPIService) FindPetsByTagsExecute(r ApiFindPetsByTagsRequest) ([]Pet
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.tags == nil {
+	if len(r.tags) == 0 {
 		return localVarReturnValue, nil, reportError("tags is required and must be specified")
 	}
 
-	parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "csv")
+	AddQueryParamSlice(localVarQueryParams, "tags", ToStringSlice(r.tags), "csv")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -878,10 +878,10 @@ func (a *PetAPIService) UpdatePetWithFormExecute(r ApiUpdatePetWithFormRequest) 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.name != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "name", r.name, "", "")
+		AddFormParam(localVarFormParams, "name", *r.name)
 	}
 	if r.status != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "status", r.status, "", "")
+		AddFormParam(localVarFormParams, "status", *r.status)
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -992,7 +992,7 @@ func (a *PetAPIService) UploadFileExecute(r ApiUploadFileRequest) (*ApiResponse,
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.additionalMetadata != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "additionalMetadata", r.additionalMetadata, "", "")
+		AddFormParam(localVarFormParams, "additionalMetadata", *r.additionalMetadata)
 	}
 	var fileLocalVarFormFileName string
 	var fileLocalVarFileName     string
@@ -1130,7 +1130,7 @@ func (a *PetAPIService) UploadFileWithRequiredFileExecute(r ApiUploadFileWithReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.additionalMetadata != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "additionalMetadata", r.additionalMetadata, "", "")
+		AddFormParam(localVarFormParams, "additionalMetadata", *r.additionalMetadata)
 	}
 	var requiredFileLocalVarFormFileName string
 	var requiredFileLocalVarFileName     string

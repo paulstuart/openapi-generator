@@ -55,7 +55,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/stru
 	ApiService *{{classname}}Service
 {{/generateInterfaces}}
 {{#allParams}}
-	{{paramName}} {{^isPathParam}}{{^isFile}}*{{/isFile}}{{/isPathParam}}{{{dataType}}}
+	{{paramName}} {{^isPathParam}}{{^isFile}}{{^isArray}}*{{/isArray}}{{/isFile}}{{/isPathParam}}{{{dataType}}}
 {{/allParams}}
 }
 
@@ -68,7 +68,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/stru
 // Deprecated
 {{/isDeprecated}}
 func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
-	r.{{paramName}} = {{^isFile}}&{{/isFile}}{{paramName}}
+	r.{{paramName}} = {{^isFile}}{{^isArray}}&{{/isArray}}{{/isFile}}{{paramName}}
 	return r
 }
 
@@ -132,17 +132,24 @@ func (a *{{{classname}}}Service) {{nickname}}Execute(r {{#structPrefix}}{{&class
 	{{#allParams}}
 	{{#required}}
 	{{^isPathParam}}
+	{{#isArray}}
+	if len(r.{{paramName}}) == 0 {
+		return {{#returnType}}localVarReturnValue, {{/returnType}}nil, reportError("{{paramName}} is required and must be specified")
+	}
+	{{/isArray}}
+	{{^isArray}}
 	if r.{{paramName}} == nil {
 		return {{#returnType}}localVarReturnValue, {{/returnType}}nil, reportError("{{paramName}} is required and must be specified")
 	}
+	{{/isArray}}
 	{{/isPathParam}}
 	{{#minItems}}
-	if len({{^isPathParam}}*{{/isPathParam}}r.{{paramName}}) < {{minItems}} {
+	if len(r.{{paramName}}) < {{minItems}} {
 		return {{#returnType}}localVarReturnValue, {{/returnType}}nil, reportError("{{paramName}} must have at least {{minItems}} elements")
 	}
 	{{/minItems}}
 	{{#maxItems}}
-	if len({{^isPathParam}}*{{/isPathParam}}r.{{paramName}}) > {{maxItems}} {
+	if len(r.{{paramName}}) > {{maxItems}} {
 		return {{#returnType}}localVarReturnValue, {{/returnType}}nil, reportError("{{paramName}} must have less than {{maxItems}} elements")
 	}
 	{{/maxItems}}
@@ -183,34 +190,65 @@ func (a *{{{classname}}}Service) {{nickname}}Execute(r {{#structPrefix}}{{&class
 
 	{{#queryParams}}
 	{{#required}}
-	{{#isCollectionFormatMulti}}
-	// Handle collection format "multi" - parameterAddToHeaderOrQuery handles slices natively without reflection
-	parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", *r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
-	{{/isCollectionFormatMulti}}
-	{{^isCollectionFormatMulti}}
+	{{! Required query parameters - use generic functions for primitive types }}
+	{{#isArray}}
+	{{#items.isPrimitiveType}}
+	AddQueryParamSlice(localVarQueryParams, "{{{baseName}}}", ToStringSlice(r.{{paramName}}), "{{collectionFormat}}")
+	{{/items.isPrimitiveType}}
+	{{^items.isPrimitiveType}}
 	parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
-	{{/isCollectionFormatMulti}}
+	{{/items.isPrimitiveType}}
+	{{/isArray}}
+	{{^isArray}}
+	{{#isPrimitiveType}}
+	AddQueryParam(localVarQueryParams, "{{{baseName}}}", *r.{{paramName}})
+	{{/isPrimitiveType}}
+	{{^isPrimitiveType}}
+	parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+	{{/isPrimitiveType}}
+	{{/isArray}}
 	{{/required}}
 	{{^required}}
-	if r.{{paramName}} != nil {
-	{{#isCollectionFormatMulti}}
-		// Handle collection format "multi" - parameterAddToHeaderOrQuery handles slices natively without reflection
-		parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", *r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
-	{{/isCollectionFormatMulti}}
-	{{^isCollectionFormatMulti}}
+	{{! Optional query parameters - len check for arrays, nil check for scalars }}
+	{{#isArray}}
+	if len(r.{{paramName}}) > 0 {
+	{{#items.isPrimitiveType}}
+		AddQueryParamSlice(localVarQueryParams, "{{{baseName}}}", ToStringSlice(r.{{paramName}}), "{{collectionFormat}}")
+	{{/items.isPrimitiveType}}
+	{{^items.isPrimitiveType}}
 		parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
-	{{/isCollectionFormatMulti}}
+	{{/items.isPrimitiveType}}
+	{{/isArray}}
+	{{^isArray}}
+	if r.{{paramName}} != nil {
+	{{#isPrimitiveType}}
+		AddQueryParam(localVarQueryParams, "{{{baseName}}}", *r.{{paramName}})
+	{{/isPrimitiveType}}
+	{{^isPrimitiveType}}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+	{{/isPrimitiveType}}
+	{{/isArray}}
 	{{#defaultValue}}} else {
-    {{#isArray}}
-        var defaultValue {{{dataType}}} = {{{dataType}}}{{{.}}}
-        parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", defaultValue, "{{style}}", "{{collectionFormat}}")
-        r.{{paramName}} = &defaultValue
-    {{/isArray}}
-    {{^isArray}}
-        var defaultValue {{{dataType}}} = {{{.}}}
-        parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", defaultValue, "{{style}}", "{{collectionFormat}}")
-        r.{{paramName}} = &defaultValue
-    {{/isArray}}
+	{{#isArray}}
+		var defaultValue {{{dataType}}} = {{{dataType}}}{{{.}}}
+	{{#items.isPrimitiveType}}
+		AddQueryParamSlice(localVarQueryParams, "{{{baseName}}}", ToStringSlice(defaultValue), "{{collectionFormat}}")
+	{{/items.isPrimitiveType}}
+	{{^items.isPrimitiveType}}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", defaultValue, "{{style}}", "{{collectionFormat}}")
+	{{/items.isPrimitiveType}}
+		r.{{paramName}} = &defaultValue
+	{{/isArray}}
+	{{^isArray}}
+		var defaultValue {{{dataType}}} = {{{.}}}
+	{{#isPrimitiveType}}
+		AddQueryParam(localVarQueryParams, "{{{baseName}}}", defaultValue)
+	{{/isPrimitiveType}}
+	{{^isPrimitiveType}}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "{{{baseName}}}", defaultValue, "{{style}}", "{{collectionFormat}}")
+	{{/isPrimitiveType}}
+		r.{{paramName}} = &defaultValue
+	{{/isArray}}
 	{{/defaultValue}}}
 	{{/required}}
 	{{/queryParams}}
@@ -237,11 +275,44 @@ func (a *{{{classname}}}Service) {{nickname}}Execute(r {{#structPrefix}}{{&class
 	}
 {{#headerParams}}
 	{{#required}}
+	{{! Required header parameters - use generic function for primitive types }}
+	{{#isArray}}
+	{{#items.isPrimitiveType}}
+	SetHeaderSlice(localVarHeaderParams, "{{{baseName}}}", r.{{paramName}})
+	{{/items.isPrimitiveType}}
+	{{^items.isPrimitiveType}}
 	parameterAddToHeaderOrQuery(localVarHeaderParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+	{{/items.isPrimitiveType}}
+	{{/isArray}}
+	{{^isArray}}
+	{{#isPrimitiveType}}
+	SetHeader(localVarHeaderParams, "{{{baseName}}}", *r.{{paramName}})
+	{{/isPrimitiveType}}
+	{{^isPrimitiveType}}
+	parameterAddToHeaderOrQuery(localVarHeaderParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+	{{/isPrimitiveType}}
+	{{/isArray}}
 	{{/required}}
 	{{^required}}
-	if r.{{paramName}} != nil {
+	{{! Optional header parameters - len check for arrays, nil check for scalars }}
+	{{#isArray}}
+	if len(r.{{paramName}}) > 0 {
+	{{#items.isPrimitiveType}}
+		SetHeaderSlice(localVarHeaderParams, "{{{baseName}}}", r.{{paramName}})
+	{{/items.isPrimitiveType}}
+	{{^items.isPrimitiveType}}
 		parameterAddToHeaderOrQuery(localVarHeaderParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+	{{/items.isPrimitiveType}}
+	{{/isArray}}
+	{{^isArray}}
+	if r.{{paramName}} != nil {
+	{{#isPrimitiveType}}
+		SetHeader(localVarHeaderParams, "{{{baseName}}}", *r.{{paramName}})
+	{{/isPrimitiveType}}
+	{{^isPrimitiveType}}
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+	{{/isPrimitiveType}}
+	{{/isArray}}
 	}
 	{{/required}}
 {{/headerParams}}
@@ -287,7 +358,23 @@ func (a *{{{classname}}}Service) {{nickname}}Execute(r {{#structPrefix}}{{&class
 {{/isFile}}
 {{^isFile}}
 {{#required}}
+{{! Required form parameters - use generic function for primitive types }}
+{{#isArray}}
+{{#items.isPrimitiveType}}
+	AddQueryParamSlice(localVarFormParams, "{{{baseName}}}", ToStringSlice(r.{{paramName}}), "{{collectionFormat}}")
+{{/items.isPrimitiveType}}
+{{^items.isPrimitiveType}}
 	parameterAddToHeaderOrQuery(localVarFormParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+{{/items.isPrimitiveType}}
+{{/isArray}}
+{{^isArray}}
+{{#isPrimitiveType}}
+	AddFormParam(localVarFormParams, "{{{baseName}}}", *r.{{paramName}})
+{{/isPrimitiveType}}
+{{^isPrimitiveType}}
+	parameterAddToHeaderOrQuery(localVarFormParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+{{/isPrimitiveType}}
+{{/isArray}}
 {{/required}}
 {{^required}}
 {{#isModel}}
@@ -300,9 +387,27 @@ func (a *{{{classname}}}Service) {{nickname}}Execute(r {{#structPrefix}}{{&class
 	}
 {{/isModel}}
 {{^isModel}}
-	if r.{{paramName}} != nil {
+{{! Optional form parameters - len check for arrays, nil check for scalars }}
+{{#isArray}}
+	if len(r.{{paramName}}) > 0 {
+{{#items.isPrimitiveType}}
+		AddQueryParamSlice(localVarFormParams, "{{{baseName}}}", ToStringSlice(r.{{paramName}}), "{{collectionFormat}}")
+{{/items.isPrimitiveType}}
+{{^items.isPrimitiveType}}
 		parameterAddToHeaderOrQuery(localVarFormParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+{{/items.isPrimitiveType}}
 	}
+{{/isArray}}
+{{^isArray}}
+	if r.{{paramName}} != nil {
+{{#isPrimitiveType}}
+		AddFormParam(localVarFormParams, "{{{baseName}}}", *r.{{paramName}})
+{{/isPrimitiveType}}
+{{^isPrimitiveType}}
+		parameterAddToHeaderOrQuery(localVarFormParams, "{{{baseName}}}", r.{{paramName}}, "{{style}}", "{{collectionFormat}}")
+{{/isPrimitiveType}}
+	}
+{{/isArray}}
 {{/isModel}}
 {{/required}}
 {{/isFile}}

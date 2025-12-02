@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"time"
 )
 
@@ -364,7 +365,11 @@ func IsNil(i interface{}) bool {
 	case map[string]string:
 		return v == nil
 	default:
-		return false
+		// For interfaces that might contain nil pointers to structs (like MappedNullable),
+		// we need to use reflect to check if the underlying value is nil.
+		// This handles cases like (*Category)(nil) passed as MappedNullable interface.
+		rv := reflect.ValueOf(i)
+		return rv.Kind() == reflect.Ptr && rv.IsNil()
 	}
 }
 

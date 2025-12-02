@@ -468,8 +468,8 @@ public class GoClientCodegenTest {
         TestUtils.assertFileContains(helpersGenericsPath, "func formatIntArray");
     }
 
-    @Test(description = "test that client.go does not import reflect package (uses type switches instead)")
-    public void testClientNoReflectionImport() throws IOException {
+    @Test(description = "test that client.go uses type switches with minimal reflection fallback for custom struct slices")
+    public void testClientUsesTypeSwitchesWithMinimalReflection() throws IOException {
         File output = Files.createTempDirectory("test").toFile();
         output.deleteOnExit();
 
@@ -482,13 +482,18 @@ public class GoClientCodegenTest {
         List<File> files = generator.opts(configurator.toClientOptInput()).generate();
         files.forEach(File::deleteOnExit);
 
-        // Verify client.go does not import reflect
         Path clientPath = Paths.get(output + "/client.go");
         TestUtils.assertFileExists(clientPath);
-        TestUtils.assertFileNotContains(clientPath, "\"reflect\"");
 
-        // Verify it uses type switches instead
+        // Verify it uses type switches for primary type handling
         TestUtils.assertFileContains(clientPath, "switch v := obj.(type)");
+
+        // Verify reflection is only used in fallback for slices of custom types
+        // (not for the main type handling which uses type switches)
+        TestUtils.assertFileContains(clientPath, "rv.Kind() == reflect.Slice");
+
+        // Verify we don't use reflection in the hot path (main type cases)
+        TestUtils.assertFileNotContains(clientPath, "reflect.ValueOf(obj).Kind()");
     }
 
     @Test(description = "test that api files do not use reflect for parameter handling")
