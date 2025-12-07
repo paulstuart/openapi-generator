@@ -19,328 +19,190 @@ import (
 	"time"
 )
 
+// Ptr is a generic helper that returns a pointer to any value.
+// This replaces all the type-specific Ptr* functions with a single generic function.
+func Ptr[T any](v T) *T { return &v }
+
 // PtrBool is a helper routine that returns a pointer to given boolean value.
+// Deprecated: Use Ptr(v) instead.
 func PtrBool(v bool) *bool { return &v }
 
 // PtrInt is a helper routine that returns a pointer to given integer value.
+// Deprecated: Use Ptr(v) instead.
 func PtrInt(v int) *int { return &v }
 
 // PtrInt32 is a helper routine that returns a pointer to given integer value.
+// Deprecated: Use Ptr(v) instead.
 func PtrInt32(v int32) *int32 { return &v }
 
 // PtrInt64 is a helper routine that returns a pointer to given integer value.
+// Deprecated: Use Ptr(v) instead.
 func PtrInt64(v int64) *int64 { return &v }
 
 // PtrFloat32 is a helper routine that returns a pointer to given float value.
+// Deprecated: Use Ptr(v) instead.
 func PtrFloat32(v float32) *float32 { return &v }
 
 // PtrFloat64 is a helper routine that returns a pointer to given float value.
+// Deprecated: Use Ptr(v) instead.
 func PtrFloat64(v float64) *float64 { return &v }
 
 // PtrString is a helper routine that returns a pointer to given string value.
+// Deprecated: Use Ptr(v) instead.
 func PtrString(v string) *string { return &v }
 
 // PtrTime is helper routine that returns a pointer to given Time value.
+// Deprecated: Use Ptr(v) instead.
 func PtrTime(v time.Time) *time.Time { return &v }
 
-type NullableBool struct {
-	value *bool
+// ============================================================================
+// Generic Nullable Type
+// ============================================================================
+
+// Nullable is a generic wrapper for nullable values that tracks whether
+// a value has been explicitly set (including to null) vs left unset.
+// This replaces the repetitive NullableBool, NullableInt, etc. types.
+type Nullable[T any] struct {
+	value *T
 	isSet bool
 }
 
-func (v NullableBool) Get() *bool {
+// Get returns a pointer to the value, or nil if not set.
+func (v Nullable[T]) Get() *T {
 	return v.value
 }
 
-func (v *NullableBool) Set(val *bool) {
+// Set stores the value and marks it as set.
+func (v *Nullable[T]) Set(val *T) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableBool) IsSet() bool {
+// IsSet returns true if a value has been set (including explicit nil).
+func (v Nullable[T]) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableBool) Unset() {
+// Unset clears the value and marks it as not set.
+func (v *Nullable[T]) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
+// NewNullable creates a new Nullable with the given value.
+func NewNullable[T any](val *T) *Nullable[T] {
+	return &Nullable[T]{value: val, isSet: true}
+}
+
+// MarshalJSON implements json.Marshaler.
+func (v Nullable[T]) MarshalJSON() ([]byte, error) {
+	return json.Marshal(v.value)
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (v *Nullable[T]) UnmarshalJSON(src []byte) error {
+	v.isSet = true
+	return json.Unmarshal(src, &v.value)
+}
+
+// Type aliases for backward compatibility with existing code.
+// These allow existing code using NullableBool, NullableInt, etc. to continue working.
+
+// NullableBool is a nullable boolean type.
+// Deprecated: Use Nullable[bool] directly for new code.
+type NullableBool = Nullable[bool]
+
+// NullableInt is a nullable int type.
+// Deprecated: Use Nullable[int] directly for new code.
+type NullableInt = Nullable[int]
+
+// NullableInt32 is a nullable int32 type.
+// Deprecated: Use Nullable[int32] directly for new code.
+type NullableInt32 = Nullable[int32]
+
+// NullableInt64 is a nullable int64 type.
+// Deprecated: Use Nullable[int64] directly for new code.
+type NullableInt64 = Nullable[int64]
+
+// NullableFloat32 is a nullable float32 type.
+// Deprecated: Use Nullable[float32] directly for new code.
+type NullableFloat32 = Nullable[float32]
+
+// NullableFloat64 is a nullable float64 type.
+// Deprecated: Use Nullable[float64] directly for new code.
+type NullableFloat64 = Nullable[float64]
+
+// NullableString is a nullable string type.
+// Deprecated: Use Nullable[string] directly for new code.
+type NullableString = Nullable[string]
+
+// NullableTime is a nullable time.Time type.
+// Deprecated: Use Nullable[time.Time] directly for new code.
+type NullableTime = Nullable[time.Time]
+
+// Legacy constructor functions for backward compatibility.
+// These wrap NewNullable for each specific type.
+
+// NewNullableBool creates a new NullableBool.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableBool(val *bool) *NullableBool {
-	return &NullableBool{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableBool) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableBool) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-type NullableInt struct {
-	value *int
-	isSet bool
-}
-
-func (v NullableInt) Get() *int {
-	return v.value
-}
-
-func (v *NullableInt) Set(val *int) {
-	v.value = val
-	v.isSet = true
-}
-
-func (v NullableInt) IsSet() bool {
-	return v.isSet
-}
-
-func (v *NullableInt) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
+// NewNullableInt creates a new NullableInt.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableInt(val *int) *NullableInt {
-	return &NullableInt{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableInt) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableInt) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-type NullableInt32 struct {
-	value *int32
-	isSet bool
-}
-
-func (v NullableInt32) Get() *int32 {
-	return v.value
-}
-
-func (v *NullableInt32) Set(val *int32) {
-	v.value = val
-	v.isSet = true
-}
-
-func (v NullableInt32) IsSet() bool {
-	return v.isSet
-}
-
-func (v *NullableInt32) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
+// NewNullableInt32 creates a new NullableInt32.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableInt32(val *int32) *NullableInt32 {
-	return &NullableInt32{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableInt32) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableInt32) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-type NullableInt64 struct {
-	value *int64
-	isSet bool
-}
-
-func (v NullableInt64) Get() *int64 {
-	return v.value
-}
-
-func (v *NullableInt64) Set(val *int64) {
-	v.value = val
-	v.isSet = true
-}
-
-func (v NullableInt64) IsSet() bool {
-	return v.isSet
-}
-
-func (v *NullableInt64) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
+// NewNullableInt64 creates a new NullableInt64.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableInt64(val *int64) *NullableInt64 {
-	return &NullableInt64{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableInt64) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableInt64) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-type NullableFloat32 struct {
-	value *float32
-	isSet bool
-}
-
-func (v NullableFloat32) Get() *float32 {
-	return v.value
-}
-
-func (v *NullableFloat32) Set(val *float32) {
-	v.value = val
-	v.isSet = true
-}
-
-func (v NullableFloat32) IsSet() bool {
-	return v.isSet
-}
-
-func (v *NullableFloat32) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
+// NewNullableFloat32 creates a new NullableFloat32.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableFloat32(val *float32) *NullableFloat32 {
-	return &NullableFloat32{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableFloat32) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableFloat32) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-type NullableFloat64 struct {
-	value *float64
-	isSet bool
-}
-
-func (v NullableFloat64) Get() *float64 {
-	return v.value
-}
-
-func (v *NullableFloat64) Set(val *float64) {
-	v.value = val
-	v.isSet = true
-}
-
-func (v NullableFloat64) IsSet() bool {
-	return v.isSet
-}
-
-func (v *NullableFloat64) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
+// NewNullableFloat64 creates a new NullableFloat64.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableFloat64(val *float64) *NullableFloat64 {
-	return &NullableFloat64{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableFloat64) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableFloat64) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-type NullableString struct {
-	value *string
-	isSet bool
-}
-
-func (v NullableString) Get() *string {
-	return v.value
-}
-
-func (v *NullableString) Set(val *string) {
-	v.value = val
-	v.isSet = true
-}
-
-func (v NullableString) IsSet() bool {
-	return v.isSet
-}
-
-func (v *NullableString) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
+// NewNullableString creates a new NullableString.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableString(val *string) *NullableString {
-	return &NullableString{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableString) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableString) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-type NullableTime struct {
-	value *time.Time
-	isSet bool
-}
-
-func (v NullableTime) Get() *time.Time {
-	return v.value
-}
-
-func (v *NullableTime) Set(val *time.Time) {
-	v.value = val
-	v.isSet = true
-}
-
-func (v NullableTime) IsSet() bool {
-	return v.isSet
-}
-
-func (v *NullableTime) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
+// NewNullableTime creates a new NullableTime.
+// Deprecated: Use NewNullable(val) instead.
 func NewNullableTime(val *time.Time) *NullableTime {
-	return &NullableTime{value: val, isSet: true}
+	return NewNullable(val)
 }
 
-func (v NullableTime) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-func (v *NullableTime) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
-}
-
-// IsNil checks if an input is nil
+// IsNil checks if an interface value contains a nil pointer.
+// This is needed because passing a nil pointer to an interface{} does not make
+// the interface itself nil - it contains type information with a nil value.
+// Used only for checking MappedNullable interface values in client.go.
 func IsNil(i interface{}) bool {
 	if i == nil {
 		return true
 	}
-	switch reflect.TypeOf(i).Kind() {
-	case reflect.Chan, reflect.Func, reflect.Map, reflect.Ptr, reflect.UnsafePointer, reflect.Interface, reflect.Slice:
-		return reflect.ValueOf(i).IsNil()
-	case reflect.Array:
-		return reflect.ValueOf(i).IsZero()
+	rv := reflect.ValueOf(i)
+	switch rv.Kind() {
+	case reflect.Ptr, reflect.Slice, reflect.Map, reflect.Chan, reflect.Func, reflect.Interface:
+		return rv.IsNil()
 	}
 	return false
 }

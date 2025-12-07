@@ -51,7 +51,7 @@ func NewDogWithDefaults() *Dog {
 
 // GetBreed returns the Breed field value if set, zero value otherwise.
 func (o *Dog) GetBreed() string {
-	if o == nil || IsNil(o.Breed) {
+	if o == nil || o.Breed == nil {
 		var ret string
 		return ret
 	}
@@ -61,7 +61,7 @@ func (o *Dog) GetBreed() string {
 // GetBreedOk returns a tuple with the Breed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Dog) GetBreedOk() (*string, bool) {
-	if o == nil || IsNil(o.Breed) {
+	if o == nil || o.Breed == nil {
 		return nil, false
 	}
 	return o.Breed, true
@@ -69,7 +69,7 @@ func (o *Dog) GetBreedOk() (*string, bool) {
 
 // HasBreed returns a boolean if a field has been set.
 func (o *Dog) HasBreed() bool {
-	if o != nil && !IsNil(o.Breed) {
+	if o != nil && o.Breed != nil {
 		return true
 	}
 
@@ -99,7 +99,7 @@ func (o Dog) ToMap() (map[string]interface{}, error) {
 	if errAnimal != nil {
 		return map[string]interface{}{}, errAnimal
 	}
-	if !IsNil(o.Breed) {
+	if o.Breed != nil {
 		toSerialize["breed"] = o.Breed
 	}
 

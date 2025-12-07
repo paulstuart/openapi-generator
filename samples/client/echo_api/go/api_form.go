@@ -104,13 +104,13 @@ func (a *FormAPIService) TestFormIntegerBooleanStringExecute(r ApiTestFormIntege
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.integerForm != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "integer_form", r.integerForm, "", "")
+		AddFormParam(localVarFormParams, "integer_form", *r.integerForm)
 	}
 	if r.booleanForm != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "boolean_form", r.booleanForm, "", "")
+		AddFormParam(localVarFormParams, "boolean_form", *r.booleanForm)
 	}
 	if r.stringForm != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "string_form", r.stringForm, "", "")
+		AddFormParam(localVarFormParams, "string_form", *r.stringForm)
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
@@ -357,22 +357,22 @@ func (a *FormAPIService) TestFormOneofExecute(r ApiTestFormOneofRequest) (string
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.form1 != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "form1", r.form1, "", "")
+		AddFormParam(localVarFormParams, "form1", *r.form1)
 	}
 	if r.form2 != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "form2", r.form2, "", "")
+		AddFormParam(localVarFormParams, "form2", *r.form2)
 	}
 	if r.form3 != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "form3", r.form3, "", "")
+		AddFormParam(localVarFormParams, "form3", *r.form3)
 	}
 	if r.form4 != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "form4", r.form4, "", "")
+		AddFormParam(localVarFormParams, "form4", *r.form4)
 	}
 	if r.id != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "id", r.id, "", "")
+		AddFormParam(localVarFormParams, "id", *r.id)
 	}
 	if r.name != nil {
-		parameterAddToHeaderOrQuery(localVarFormParams, "name", r.name, "", "")
+		AddFormParam(localVarFormParams, "name", *r.name)
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {

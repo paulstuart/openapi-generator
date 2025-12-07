@@ -49,7 +49,7 @@ func NewDefaultValueWithDefaults() *DefaultValue {
 
 // GetArrayStringEnumRefDefault returns the ArrayStringEnumRefDefault field value if set, zero value otherwise.
 func (o *DefaultValue) GetArrayStringEnumRefDefault() []StringEnumRef {
-	if o == nil || IsNil(o.ArrayStringEnumRefDefault) {
+	if o == nil || o.ArrayStringEnumRefDefault == nil {
 		var ret []StringEnumRef
 		return ret
 	}
@@ -59,7 +59,7 @@ func (o *DefaultValue) GetArrayStringEnumRefDefault() []StringEnumRef {
 // GetArrayStringEnumRefDefaultOk returns a tuple with the ArrayStringEnumRefDefault field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DefaultValue) GetArrayStringEnumRefDefaultOk() ([]StringEnumRef, bool) {
-	if o == nil || IsNil(o.ArrayStringEnumRefDefault) {
+	if o == nil || o.ArrayStringEnumRefDefault == nil {
 		return nil, false
 	}
 	return o.ArrayStringEnumRefDefault, true
@@ -67,7 +67,7 @@ func (o *DefaultValue) GetArrayStringEnumRefDefaultOk() ([]StringEnumRef, bool) 
 
 // HasArrayStringEnumRefDefault returns a boolean if a field has been set.
 func (o *DefaultValue) HasArrayStringEnumRefDefault() bool {
-	if o != nil && !IsNil(o.ArrayStringEnumRefDefault) {
+	if o != nil && o.ArrayStringEnumRefDefault != nil {
 		return true
 	}
 
@@ -81,7 +81,7 @@ func (o *DefaultValue) SetArrayStringEnumRefDefault(v []StringEnumRef) {
 
 // GetArrayStringEnumDefault returns the ArrayStringEnumDefault field value if set, zero value otherwise.
 func (o *DefaultValue) GetArrayStringEnumDefault() []string {
-	if o == nil || IsNil(o.ArrayStringEnumDefault) {
+	if o == nil || o.ArrayStringEnumDefault == nil {
 		var ret []string
 		return ret
 	}
@@ -91,7 +91,7 @@ func (o *DefaultValue) GetArrayStringEnumDefault() []string {
 // GetArrayStringEnumDefaultOk returns a tuple with the ArrayStringEnumDefault field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DefaultValue) GetArrayStringEnumDefaultOk() ([]string, bool) {
-	if o == nil || IsNil(o.ArrayStringEnumDefault) {
+	if o == nil || o.ArrayStringEnumDefault == nil {
 		return nil, false
 	}
 	return o.ArrayStringEnumDefault, true
@@ -99,7 +99,7 @@ func (o *DefaultValue) GetArrayStringEnumDefaultOk() ([]string, bool) {
 
 // HasArrayStringEnumDefault returns a boolean if a field has been set.
 func (o *DefaultValue) HasArrayStringEnumDefault() bool {
-	if o != nil && !IsNil(o.ArrayStringEnumDefault) {
+	if o != nil && o.ArrayStringEnumDefault != nil {
 		return true
 	}
 
@@ -113,7 +113,7 @@ func (o *DefaultValue) SetArrayStringEnumDefault(v []string) {
 
 // GetArrayStringDefault returns the ArrayStringDefault field value if set, zero value otherwise.
 func (o *DefaultValue) GetArrayStringDefault() []string {
-	if o == nil || IsNil(o.ArrayStringDefault) {
+	if o == nil || o.ArrayStringDefault == nil {
 		var ret []string
 		return ret
 	}
@@ -123,7 +123,7 @@ func (o *DefaultValue) GetArrayStringDefault() []string {
 // GetArrayStringDefaultOk returns a tuple with the ArrayStringDefault field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DefaultValue) GetArrayStringDefaultOk() ([]string, bool) {
-	if o == nil || IsNil(o.ArrayStringDefault) {
+	if o == nil || o.ArrayStringDefault == nil {
 		return nil, false
 	}
 	return o.ArrayStringDefault, true
@@ -131,7 +131,7 @@ func (o *DefaultValue) GetArrayStringDefaultOk() ([]string, bool) {
 
 // HasArrayStringDefault returns a boolean if a field has been set.
 func (o *DefaultValue) HasArrayStringDefault() bool {
-	if o != nil && !IsNil(o.ArrayStringDefault) {
+	if o != nil && o.ArrayStringDefault != nil {
 		return true
 	}
 
@@ -145,7 +145,7 @@ func (o *DefaultValue) SetArrayStringDefault(v []string) {
 
 // GetArrayIntegerDefault returns the ArrayIntegerDefault field value if set, zero value otherwise.
 func (o *DefaultValue) GetArrayIntegerDefault() []int32 {
-	if o == nil || IsNil(o.ArrayIntegerDefault) {
+	if o == nil || o.ArrayIntegerDefault == nil {
 		var ret []int32
 		return ret
 	}
@@ -155,7 +155,7 @@ func (o *DefaultValue) GetArrayIntegerDefault() []int32 {
 // GetArrayIntegerDefaultOk returns a tuple with the ArrayIntegerDefault field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DefaultValue) GetArrayIntegerDefaultOk() ([]int32, bool) {
-	if o == nil || IsNil(o.ArrayIntegerDefault) {
+	if o == nil || o.ArrayIntegerDefault == nil {
 		return nil, false
 	}
 	return o.ArrayIntegerDefault, true
@@ -163,7 +163,7 @@ func (o *DefaultValue) GetArrayIntegerDefaultOk() ([]int32, bool) {
 
 // HasArrayIntegerDefault returns a boolean if a field has been set.
 func (o *DefaultValue) HasArrayIntegerDefault() bool {
-	if o != nil && !IsNil(o.ArrayIntegerDefault) {
+	if o != nil && o.ArrayIntegerDefault != nil {
 		return true
 	}
 
@@ -177,7 +177,7 @@ func (o *DefaultValue) SetArrayIntegerDefault(v []int32) {
 
 // GetArrayString returns the ArrayString field value if set, zero value otherwise.
 func (o *DefaultValue) GetArrayString() []string {
-	if o == nil || IsNil(o.ArrayString) {
+	if o == nil || o.ArrayString == nil {
 		var ret []string
 		return ret
 	}
@@ -187,7 +187,7 @@ func (o *DefaultValue) GetArrayString() []string {
 // GetArrayStringOk returns a tuple with the ArrayString field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DefaultValue) GetArrayStringOk() ([]string, bool) {
-	if o == nil || IsNil(o.ArrayString) {
+	if o == nil || o.ArrayString == nil {
 		return nil, false
 	}
 	return o.ArrayString, true
@@ -195,7 +195,7 @@ func (o *DefaultValue) GetArrayStringOk() ([]string, bool) {
 
 // HasArrayString returns a boolean if a field has been set.
 func (o *DefaultValue) HasArrayString() bool {
-	if o != nil && !IsNil(o.ArrayString) {
+	if o != nil && o.ArrayString != nil {
 		return true
 	}
 
@@ -220,7 +220,7 @@ func (o *DefaultValue) GetArrayStringNullable() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DefaultValue) GetArrayStringNullableOk() ([]string, bool) {
-	if o == nil || IsNil(o.ArrayStringNullable) {
+	if o == nil || o.ArrayStringNullable == nil {
 		return nil, false
 	}
 	return o.ArrayStringNullable, true
@@ -228,7 +228,7 @@ func (o *DefaultValue) GetArrayStringNullableOk() ([]string, bool) {
 
 // HasArrayStringNullable returns a boolean if a field has been set.
 func (o *DefaultValue) HasArrayStringNullable() bool {
-	if o != nil && !IsNil(o.ArrayStringNullable) {
+	if o != nil && o.ArrayStringNullable != nil {
 		return true
 	}
 
@@ -253,7 +253,7 @@ func (o *DefaultValue) GetArrayStringExtensionNullable() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DefaultValue) GetArrayStringExtensionNullableOk() ([]string, bool) {
-	if o == nil || IsNil(o.ArrayStringExtensionNullable) {
+	if o == nil || o.ArrayStringExtensionNullable == nil {
 		return nil, false
 	}
 	return o.ArrayStringExtensionNullable, true
@@ -261,7 +261,7 @@ func (o *DefaultValue) GetArrayStringExtensionNullableOk() ([]string, bool) {
 
 // HasArrayStringExtensionNullable returns a boolean if a field has been set.
 func (o *DefaultValue) HasArrayStringExtensionNullable() bool {
-	if o != nil && !IsNil(o.ArrayStringExtensionNullable) {
+	if o != nil && o.ArrayStringExtensionNullable != nil {
 		return true
 	}
 
@@ -275,7 +275,7 @@ func (o *DefaultValue) SetArrayStringExtensionNullable(v []string) {
 
 // GetStringNullable returns the StringNullable field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DefaultValue) GetStringNullable() string {
-	if o == nil || IsNil(o.StringNullable.Get()) {
+	if o == nil || o.StringNullable.Get() == nil {
 		var ret string
 		return ret
 	}
@@ -325,19 +325,19 @@ func (o DefaultValue) MarshalJSON() ([]byte, error) {
 
 func (o DefaultValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.ArrayStringEnumRefDefault) {
+	if o.ArrayStringEnumRefDefault != nil {
 		toSerialize["array_string_enum_ref_default"] = o.ArrayStringEnumRefDefault
 	}
-	if !IsNil(o.ArrayStringEnumDefault) {
+	if o.ArrayStringEnumDefault != nil {
 		toSerialize["array_string_enum_default"] = o.ArrayStringEnumDefault
 	}
-	if !IsNil(o.ArrayStringDefault) {
+	if o.ArrayStringDefault != nil {
 		toSerialize["array_string_default"] = o.ArrayStringDefault
 	}
-	if !IsNil(o.ArrayIntegerDefault) {
+	if o.ArrayIntegerDefault != nil {
 		toSerialize["array_integer_default"] = o.ArrayIntegerDefault
 	}
-	if !IsNil(o.ArrayString) {
+	if o.ArrayString != nil {
 		toSerialize["array_string"] = o.ArrayString
 	}
 	if o.ArrayStringNullable != nil {

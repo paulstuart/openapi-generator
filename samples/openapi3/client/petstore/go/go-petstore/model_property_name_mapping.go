@@ -47,7 +47,7 @@ func NewPropertyNameMappingWithDefaults() *PropertyNameMapping {
 
 // GetHTTPDebugOperation returns the HTTPDebugOperation field value if set, zero value otherwise.
 func (o *PropertyNameMapping) GetHTTPDebugOperation() string {
-	if o == nil || IsNil(o.HTTPDebugOperation) {
+	if o == nil || o.HTTPDebugOperation == nil {
 		var ret string
 		return ret
 	}
@@ -57,7 +57,7 @@ func (o *PropertyNameMapping) GetHTTPDebugOperation() string {
 // GetHTTPDebugOperationOk returns a tuple with the HTTPDebugOperation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PropertyNameMapping) GetHTTPDebugOperationOk() (*string, bool) {
-	if o == nil || IsNil(o.HTTPDebugOperation) {
+	if o == nil || o.HTTPDebugOperation == nil {
 		return nil, false
 	}
 	return o.HTTPDebugOperation, true
@@ -65,7 +65,7 @@ func (o *PropertyNameMapping) GetHTTPDebugOperationOk() (*string, bool) {
 
 // HasHTTPDebugOperation returns a boolean if a field has been set.
 func (o *PropertyNameMapping) HasHTTPDebugOperation() bool {
-	if o != nil && !IsNil(o.HTTPDebugOperation) {
+	if o != nil && o.HTTPDebugOperation != nil {
 		return true
 	}
 
@@ -79,7 +79,7 @@ func (o *PropertyNameMapping) SetHTTPDebugOperation(v string) {
 
 // GetUnderscoreType returns the UnderscoreType field value if set, zero value otherwise.
 func (o *PropertyNameMapping) GetUnderscoreType() string {
-	if o == nil || IsNil(o.UnderscoreType) {
+	if o == nil || o.UnderscoreType == nil {
 		var ret string
 		return ret
 	}
@@ -89,7 +89,7 @@ func (o *PropertyNameMapping) GetUnderscoreType() string {
 // GetUnderscoreTypeOk returns a tuple with the UnderscoreType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PropertyNameMapping) GetUnderscoreTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.UnderscoreType) {
+	if o == nil || o.UnderscoreType == nil {
 		return nil, false
 	}
 	return o.UnderscoreType, true
@@ -97,7 +97,7 @@ func (o *PropertyNameMapping) GetUnderscoreTypeOk() (*string, bool) {
 
 // HasUnderscoreType returns a boolean if a field has been set.
 func (o *PropertyNameMapping) HasUnderscoreType() bool {
-	if o != nil && !IsNil(o.UnderscoreType) {
+	if o != nil && o.UnderscoreType != nil {
 		return true
 	}
 
@@ -111,7 +111,7 @@ func (o *PropertyNameMapping) SetUnderscoreType(v string) {
 
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *PropertyNameMapping) GetType() string {
-	if o == nil || IsNil(o.Type) {
+	if o == nil || o.Type == nil {
 		var ret string
 		return ret
 	}
@@ -121,7 +121,7 @@ func (o *PropertyNameMapping) GetType() string {
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PropertyNameMapping) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
+	if o == nil || o.Type == nil {
 		return nil, false
 	}
 	return o.Type, true
@@ -129,7 +129,7 @@ func (o *PropertyNameMapping) GetTypeOk() (*string, bool) {
 
 // HasType returns a boolean if a field has been set.
 func (o *PropertyNameMapping) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
+	if o != nil && o.Type != nil {
 		return true
 	}
 
@@ -143,7 +143,7 @@ func (o *PropertyNameMapping) SetType(v string) {
 
 // GetTypeWithUnderscore returns the TypeWithUnderscore field value if set, zero value otherwise.
 func (o *PropertyNameMapping) GetTypeWithUnderscore() string {
-	if o == nil || IsNil(o.TypeWithUnderscore) {
+	if o == nil || o.TypeWithUnderscore == nil {
 		var ret string
 		return ret
 	}
@@ -153,7 +153,7 @@ func (o *PropertyNameMapping) GetTypeWithUnderscore() string {
 // GetTypeWithUnderscoreOk returns a tuple with the TypeWithUnderscore field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PropertyNameMapping) GetTypeWithUnderscoreOk() (*string, bool) {
-	if o == nil || IsNil(o.TypeWithUnderscore) {
+	if o == nil || o.TypeWithUnderscore == nil {
 		return nil, false
 	}
 	return o.TypeWithUnderscore, true
@@ -161,7 +161,7 @@ func (o *PropertyNameMapping) GetTypeWithUnderscoreOk() (*string, bool) {
 
 // HasTypeWithUnderscore returns a boolean if a field has been set.
 func (o *PropertyNameMapping) HasTypeWithUnderscore() bool {
-	if o != nil && !IsNil(o.TypeWithUnderscore) {
+	if o != nil && o.TypeWithUnderscore != nil {
 		return true
 	}
 
@@ -183,16 +183,16 @@ func (o PropertyNameMapping) MarshalJSON() ([]byte, error) {
 
 func (o PropertyNameMapping) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.HTTPDebugOperation) {
+	if o.HTTPDebugOperation != nil {
 		toSerialize["http_debug_operation"] = o.HTTPDebugOperation
 	}
-	if !IsNil(o.UnderscoreType) {
+	if o.UnderscoreType != nil {
 		toSerialize["_type"] = o.UnderscoreType
 	}
-	if !IsNil(o.Type) {
+	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
-	if !IsNil(o.TypeWithUnderscore) {
+	if o.TypeWithUnderscore != nil {
 		toSerialize["type_"] = o.TypeWithUnderscore
 	}
 

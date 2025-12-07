@@ -44,7 +44,7 @@ func NewQueryWithDefaults() *Query {
 
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *Query) GetId() int64 {
-	if o == nil || IsNil(o.Id) {
+	if o == nil || o.Id == nil {
 		var ret int64
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *Query) GetId() int64 {
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Query) GetIdOk() (*int64, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil || o.Id == nil {
 		return nil, false
 	}
 	return o.Id, true
@@ -62,7 +62,7 @@ func (o *Query) GetIdOk() (*int64, bool) {
 
 // HasId returns a boolean if a field has been set.
 func (o *Query) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
+	if o != nil && o.Id != nil {
 		return true
 	}
 
@@ -76,7 +76,7 @@ func (o *Query) SetId(v int64) {
 
 // GetOutcomes returns the Outcomes field value if set, zero value otherwise.
 func (o *Query) GetOutcomes() []string {
-	if o == nil || IsNil(o.Outcomes) {
+	if o == nil || o.Outcomes == nil {
 		var ret []string
 		return ret
 	}
@@ -86,7 +86,7 @@ func (o *Query) GetOutcomes() []string {
 // GetOutcomesOk returns a tuple with the Outcomes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Query) GetOutcomesOk() ([]string, bool) {
-	if o == nil || IsNil(o.Outcomes) {
+	if o == nil || o.Outcomes == nil {
 		return nil, false
 	}
 	return o.Outcomes, true
@@ -94,7 +94,7 @@ func (o *Query) GetOutcomesOk() ([]string, bool) {
 
 // HasOutcomes returns a boolean if a field has been set.
 func (o *Query) HasOutcomes() bool {
-	if o != nil && !IsNil(o.Outcomes) {
+	if o != nil && o.Outcomes != nil {
 		return true
 	}
 
@@ -116,10 +116,10 @@ func (o Query) MarshalJSON() ([]byte, error) {
 
 func (o Query) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Id) {
+	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Outcomes) {
+	if o.Outcomes != nil {
 		toSerialize["outcomes"] = o.Outcomes
 	}
 	return toSerialize, nil

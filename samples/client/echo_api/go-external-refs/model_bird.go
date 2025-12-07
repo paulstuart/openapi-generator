@@ -43,7 +43,7 @@ func NewBirdWithDefaults() *Bird {
 
 // GetSize returns the Size field value if set, zero value otherwise.
 func (o *Bird) GetSize() string {
-	if o == nil || IsNil(o.Size) {
+	if o == nil || o.Size == nil {
 		var ret string
 		return ret
 	}
@@ -53,7 +53,7 @@ func (o *Bird) GetSize() string {
 // GetSizeOk returns a tuple with the Size field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Bird) GetSizeOk() (*string, bool) {
-	if o == nil || IsNil(o.Size) {
+	if o == nil || o.Size == nil {
 		return nil, false
 	}
 	return o.Size, true
@@ -61,7 +61,7 @@ func (o *Bird) GetSizeOk() (*string, bool) {
 
 // HasSize returns a boolean if a field has been set.
 func (o *Bird) HasSize() bool {
-	if o != nil && !IsNil(o.Size) {
+	if o != nil && o.Size != nil {
 		return true
 	}
 
@@ -75,7 +75,7 @@ func (o *Bird) SetSize(v string) {
 
 // GetColor returns the Color field value if set, zero value otherwise.
 func (o *Bird) GetColor() string {
-	if o == nil || IsNil(o.Color) {
+	if o == nil || o.Color == nil {
 		var ret string
 		return ret
 	}
@@ -85,7 +85,7 @@ func (o *Bird) GetColor() string {
 // GetColorOk returns a tuple with the Color field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Bird) GetColorOk() (*string, bool) {
-	if o == nil || IsNil(o.Color) {
+	if o == nil || o.Color == nil {
 		return nil, false
 	}
 	return o.Color, true
@@ -93,7 +93,7 @@ func (o *Bird) GetColorOk() (*string, bool) {
 
 // HasColor returns a boolean if a field has been set.
 func (o *Bird) HasColor() bool {
-	if o != nil && !IsNil(o.Color) {
+	if o != nil && o.Color != nil {
 		return true
 	}
 
@@ -115,10 +115,10 @@ func (o Bird) MarshalJSON() ([]byte, error) {
 
 func (o Bird) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Size) {
+	if o.Size != nil {
 		toSerialize["size"] = o.Size
 	}
-	if !IsNil(o.Color) {
+	if o.Color != nil {
 		toSerialize["color"] = o.Color
 	}
 	return toSerialize, nil

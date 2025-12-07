@@ -44,7 +44,7 @@ func NewSomeOpsRequiringRefIntRequestWithDefaults() *SomeOpsRequiringRefIntReque
 
 // GetMyIDs returns the MyIDs field value if set, zero value otherwise.
 func (o *SomeOpsRequiringRefIntRequest) GetMyIDs() []int32 {
-	if o == nil || IsNil(o.MyIDs) {
+	if o == nil || o.MyIDs == nil {
 		var ret []int32
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *SomeOpsRequiringRefIntRequest) GetMyIDs() []int32 {
 // GetMyIDsOk returns a tuple with the MyIDs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SomeOpsRequiringRefIntRequest) GetMyIDsOk() ([]int32, bool) {
-	if o == nil || IsNil(o.MyIDs) {
+	if o == nil || o.MyIDs == nil {
 		return nil, false
 	}
 	return o.MyIDs, true
@@ -62,7 +62,7 @@ func (o *SomeOpsRequiringRefIntRequest) GetMyIDsOk() ([]int32, bool) {
 
 // HasMyIDs returns a boolean if a field has been set.
 func (o *SomeOpsRequiringRefIntRequest) HasMyIDs() bool {
-	if o != nil && !IsNil(o.MyIDs) {
+	if o != nil && o.MyIDs != nil {
 		return true
 	}
 
@@ -84,7 +84,7 @@ func (o SomeOpsRequiringRefIntRequest) MarshalJSON() ([]byte, error) {
 
 func (o SomeOpsRequiringRefIntRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.MyIDs) {
+	if o.MyIDs != nil {
 		toSerialize["MyIDs"] = o.MyIDs
 	}
 

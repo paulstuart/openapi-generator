@@ -44,7 +44,7 @@ func NewTestInlineFreeformAdditionalPropertiesRequestWithDefaults() *TestInlineF
 
 // GetSomeProperty returns the SomeProperty field value if set, zero value otherwise.
 func (o *TestInlineFreeformAdditionalPropertiesRequest) GetSomeProperty() string {
-	if o == nil || IsNil(o.SomeProperty) {
+	if o == nil || o.SomeProperty == nil {
 		var ret string
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *TestInlineFreeformAdditionalPropertiesRequest) GetSomeProperty() string
 // GetSomePropertyOk returns a tuple with the SomeProperty field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TestInlineFreeformAdditionalPropertiesRequest) GetSomePropertyOk() (*string, bool) {
-	if o == nil || IsNil(o.SomeProperty) {
+	if o == nil || o.SomeProperty == nil {
 		return nil, false
 	}
 	return o.SomeProperty, true
@@ -62,7 +62,7 @@ func (o *TestInlineFreeformAdditionalPropertiesRequest) GetSomePropertyOk() (*st
 
 // HasSomeProperty returns a boolean if a field has been set.
 func (o *TestInlineFreeformAdditionalPropertiesRequest) HasSomeProperty() bool {
-	if o != nil && !IsNil(o.SomeProperty) {
+	if o != nil && o.SomeProperty != nil {
 		return true
 	}
 
@@ -84,7 +84,7 @@ func (o TestInlineFreeformAdditionalPropertiesRequest) MarshalJSON() ([]byte, er
 
 func (o TestInlineFreeformAdditionalPropertiesRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.SomeProperty) {
+	if o.SomeProperty != nil {
 		toSerialize["someProperty"] = o.SomeProperty
 	}
 

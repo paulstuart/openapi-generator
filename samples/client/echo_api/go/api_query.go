@@ -82,7 +82,7 @@ func (a *QueryAPIService) TestEnumRefStringExecute(r ApiTestEnumRefStringRequest
 	localVarFormParams := url.Values{}
 
 	if r.enumNonrefStringQuery != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "enum_nonref_string_query", r.enumNonrefStringQuery, "form", "")
+		AddQueryParam(localVarQueryParams, "enum_nonref_string_query", *r.enumNonrefStringQuery)
 	}
 	if r.enumRefStringQuery != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "enum_ref_string_query", r.enumRefStringQuery, "form", "")
@@ -205,13 +205,13 @@ func (a *QueryAPIService) TestQueryDatetimeDateStringExecute(r ApiTestQueryDatet
 	localVarFormParams := url.Values{}
 
 	if r.datetimeQuery != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "datetime_query", r.datetimeQuery, "form", "")
+		AddQueryParam(localVarQueryParams, "datetime_query", *r.datetimeQuery)
 	}
 	if r.dateQuery != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "date_query", r.dateQuery, "form", "")
+		AddQueryParam(localVarQueryParams, "date_query", *r.dateQuery)
 	}
 	if r.stringQuery != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "string_query", r.stringQuery, "form", "")
+		AddQueryParam(localVarQueryParams, "string_query", *r.stringQuery)
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -331,13 +331,13 @@ func (a *QueryAPIService) TestQueryIntegerBooleanStringExecute(r ApiTestQueryInt
 	localVarFormParams := url.Values{}
 
 	if r.integerQuery != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "integer_query", r.integerQuery, "form", "")
+		AddQueryParam(localVarQueryParams, "integer_query", *r.integerQuery)
 	}
 	if r.booleanQuery != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "boolean_query", r.booleanQuery, "form", "")
+		AddQueryParam(localVarQueryParams, "boolean_query", *r.booleanQuery)
 	}
 	if r.stringQuery != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "string_query", r.stringQuery, "form", "")
+		AddQueryParam(localVarQueryParams, "string_query", *r.stringQuery)
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -612,11 +612,11 @@ func (a *QueryAPIService) TestQueryStyleDeepObjectExplodeTrueObjectAllOfExecute(
 type ApiTestQueryStyleFormExplodeFalseArrayIntegerRequest struct {
 	ctx context.Context
 	ApiService *QueryAPIService
-	queryObject *[]int32
+	queryObject []int32
 }
 
 func (r ApiTestQueryStyleFormExplodeFalseArrayIntegerRequest) QueryObject(queryObject []int32) ApiTestQueryStyleFormExplodeFalseArrayIntegerRequest {
-	r.queryObject = &queryObject
+	r.queryObject = queryObject
 	return r
 }
 
@@ -660,8 +660,8 @@ func (a *QueryAPIService) TestQueryStyleFormExplodeFalseArrayIntegerExecute(r Ap
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.queryObject != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "query_object", r.queryObject, "form", "csv")
+	if len(r.queryObject) > 0 {
+		AddQueryParamSlice(localVarQueryParams, "query_object", ToStringSlice(r.queryObject), "csv")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -720,11 +720,11 @@ func (a *QueryAPIService) TestQueryStyleFormExplodeFalseArrayIntegerExecute(r Ap
 type ApiTestQueryStyleFormExplodeFalseArrayStringRequest struct {
 	ctx context.Context
 	ApiService *QueryAPIService
-	queryObject *[]string
+	queryObject []string
 }
 
 func (r ApiTestQueryStyleFormExplodeFalseArrayStringRequest) QueryObject(queryObject []string) ApiTestQueryStyleFormExplodeFalseArrayStringRequest {
-	r.queryObject = &queryObject
+	r.queryObject = queryObject
 	return r
 }
 
@@ -768,8 +768,8 @@ func (a *QueryAPIService) TestQueryStyleFormExplodeFalseArrayStringExecute(r Api
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.queryObject != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "query_object", r.queryObject, "form", "csv")
+	if len(r.queryObject) > 0 {
+		AddQueryParamSlice(localVarQueryParams, "query_object", ToStringSlice(r.queryObject), "csv")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1153,7 +1153,7 @@ type ApiTestQueryStyleJsonSerializationObjectRequest struct {
 	ctx context.Context
 	ApiService *QueryAPIService
 	jsonSerializedObjectRefStringQuery *Pet
-	jsonSerializedObjectArrayRefStringQuery *[]Pet
+	jsonSerializedObjectArrayRefStringQuery []Pet
 }
 
 func (r ApiTestQueryStyleJsonSerializationObjectRequest) JsonSerializedObjectRefStringQuery(jsonSerializedObjectRefStringQuery Pet) ApiTestQueryStyleJsonSerializationObjectRequest {
@@ -1162,7 +1162,7 @@ func (r ApiTestQueryStyleJsonSerializationObjectRequest) JsonSerializedObjectRef
 }
 
 func (r ApiTestQueryStyleJsonSerializationObjectRequest) JsonSerializedObjectArrayRefStringQuery(jsonSerializedObjectArrayRefStringQuery []Pet) ApiTestQueryStyleJsonSerializationObjectRequest {
-	r.jsonSerializedObjectArrayRefStringQuery = &jsonSerializedObjectArrayRefStringQuery
+	r.jsonSerializedObjectArrayRefStringQuery = jsonSerializedObjectArrayRefStringQuery
 	return r
 }
 
@@ -1209,7 +1209,7 @@ func (a *QueryAPIService) TestQueryStyleJsonSerializationObjectExecute(r ApiTest
 	if r.jsonSerializedObjectRefStringQuery != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "json_serialized_object_ref_string_query", r.jsonSerializedObjectRefStringQuery, "", "")
 	}
-	if r.jsonSerializedObjectArrayRefStringQuery != nil {
+	if len(r.jsonSerializedObjectArrayRefStringQuery) > 0 {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "json_serialized_object_array_ref_string_query", r.jsonSerializedObjectArrayRefStringQuery, "", "csv")
 	}
 	// to determine the Content-Type header

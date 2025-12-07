@@ -43,7 +43,7 @@ func NewNestedObject2WithDefaults() *NestedObject2 {
 
 // GetField1 returns the Field1 field value if set, zero value otherwise.
 func (o *NestedObject2) GetField1() string {
-	if o == nil || IsNil(o.Field1) {
+	if o == nil || o.Field1 == nil {
 		var ret string
 		return ret
 	}
@@ -53,7 +53,7 @@ func (o *NestedObject2) GetField1() string {
 // GetField1Ok returns a tuple with the Field1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NestedObject2) GetField1Ok() (*string, bool) {
-	if o == nil || IsNil(o.Field1) {
+	if o == nil || o.Field1 == nil {
 		return nil, false
 	}
 	return o.Field1, true
@@ -61,7 +61,7 @@ func (o *NestedObject2) GetField1Ok() (*string, bool) {
 
 // HasField1 returns a boolean if a field has been set.
 func (o *NestedObject2) HasField1() bool {
-	if o != nil && !IsNil(o.Field1) {
+	if o != nil && o.Field1 != nil {
 		return true
 	}
 
@@ -75,7 +75,7 @@ func (o *NestedObject2) SetField1(v string) {
 
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *NestedObject2) GetType() string {
-	if o == nil || IsNil(o.Type) {
+	if o == nil || o.Type == nil {
 		var ret string
 		return ret
 	}
@@ -85,7 +85,7 @@ func (o *NestedObject2) GetType() string {
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NestedObject2) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
+	if o == nil || o.Type == nil {
 		return nil, false
 	}
 	return o.Type, true
@@ -93,7 +93,7 @@ func (o *NestedObject2) GetTypeOk() (*string, bool) {
 
 // HasType returns a boolean if a field has been set.
 func (o *NestedObject2) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
+	if o != nil && o.Type != nil {
 		return true
 	}
 
@@ -115,10 +115,10 @@ func (o NestedObject2) MarshalJSON() ([]byte, error) {
 
 func (o NestedObject2) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Field1) {
+	if o.Field1 != nil {
 		toSerialize["field1"] = o.Field1
 	}
-	if !IsNil(o.Type) {
+	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil

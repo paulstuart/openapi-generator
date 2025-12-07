@@ -44,7 +44,7 @@ func NewArrayTestWithWrappedAndNameWithDefaults() *ArrayTestWithWrappedAndName {
 
 // GetArrayOfString returns the ArrayOfString field value if set, zero value otherwise.
 func (o *ArrayTestWithWrappedAndName) GetArrayOfString() []string {
-	if o == nil || IsNil(o.ArrayOfString) {
+	if o == nil || o.ArrayOfString == nil {
 		var ret []string
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *ArrayTestWithWrappedAndName) GetArrayOfString() []string {
 // GetArrayOfStringOk returns a tuple with the ArrayOfString field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ArrayTestWithWrappedAndName) GetArrayOfStringOk() ([]string, bool) {
-	if o == nil || IsNil(o.ArrayOfString) {
+	if o == nil || o.ArrayOfString == nil {
 		return nil, false
 	}
 	return o.ArrayOfString, true
@@ -62,7 +62,7 @@ func (o *ArrayTestWithWrappedAndName) GetArrayOfStringOk() ([]string, bool) {
 
 // HasArrayOfString returns a boolean if a field has been set.
 func (o *ArrayTestWithWrappedAndName) HasArrayOfString() bool {
-	if o != nil && !IsNil(o.ArrayOfString) {
+	if o != nil && o.ArrayOfString != nil {
 		return true
 	}
 
@@ -84,7 +84,7 @@ func (o ArrayTestWithWrappedAndName) MarshalJSON() ([]byte, error) {
 
 func (o ArrayTestWithWrappedAndName) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.ArrayOfString) {
+	if o.ArrayOfString != nil {
 		toSerialize["array_of_string"] = o.ArrayOfString
 	}
 

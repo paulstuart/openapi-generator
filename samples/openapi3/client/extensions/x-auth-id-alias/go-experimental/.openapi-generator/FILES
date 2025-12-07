@@ -9,5 +9,6 @@ docs/UsageAPI.md
 git_push.sh
 go.mod
 go.sum
+helpers_generics.go
 response.go
 utils.go

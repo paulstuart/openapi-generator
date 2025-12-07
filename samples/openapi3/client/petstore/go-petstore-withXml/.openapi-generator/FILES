@@ -12,6 +12,7 @@ docs/Tag.md
 git_push.sh
 go.mod
 go.sum
+helpers_generics.go
 model_category.go
 model_pet.go
 model_tag.go

@@ -2,6 +2,7 @@
 package {{packageName}}
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -18,14 +19,16 @@ type ParameterValue interface {
 	~string | ~int | ~int32 | ~int64 | ~uint | ~uint32 | ~uint64 |
 		~float32 | ~float64 | ~bool |
 		~[]string | ~[]int | ~[]int32 | ~[]int64 |
-		time.Time | *time.Time |
-		*string | *int | *int32 | *int64 | *uint | *uint32 | *uint64 |
-		*float32 | *float64 | *bool
+		~[]uint | ~[]uint32 | ~[]uint64 |
+		~[]float32 | ~[]float64 | ~[]bool | ~[]byte |
+		time.Time | ~*time.Time |
+		~*string | ~*int | ~*int32 | ~*int64 | ~*uint | ~*uint32 | ~*uint64 |
+		~*float32 | ~*float64 | ~*bool
 }
 
 // FormatParameter converts a parameter value to string without using reflection.
-// The type switch is resolved at compile time, providing significant performance
-// benefits over the previous reflection-based approach.
+// The type switch is highly optimized at runtime via jump tables, providing
+// significant performance benefits over the previous reflection-based approach.
 //
 // Performance comparison:
 //   - Reflection-based: ~40-100ns per parameter with multiple allocations
@@ -119,6 +122,8 @@ func FormatParameter[T ParameterValue](value T, style string) string {
 		return formatInt32Array(v, style)
 	case []int64:
 		return formatInt64Array(v, style)
+	case []byte:
+		return base64.StdEncoding.EncodeToString(v)
 	default:
 		return fmt.Sprint(v)
 	}
@@ -326,4 +331,60 @@ func ToStringSlice[T ParameterValue](values []T) []string {
 		result[i] = FormatParameter(v, "")
 	}
 	return result
+}
+
+// ============================================================================
+// Path Parameter Functions
+// These handle URL path parameter substitution with proper encoding.
+// ============================================================================
+
+// PathParams substitutes path parameters in a URL template.
+// Parameters are provided as key-value pairs: PathParams("/pet/{petId}", "petId", 123)
+// Values are URL-encoded to ensure safe transmission.
+func PathParams(path string, keysAndValues ...any) string {
+	if len(keysAndValues) == 0 {
+		return path
+	}
+	// Process key-value pairs
+	for i := 0; i+1 < len(keysAndValues); i += 2 {
+		key, ok := keysAndValues[i].(string)
+		if !ok {
+			continue
+		}
+		value := paramToString(keysAndValues[i+1])
+		placeholder := "{" + key + "}"
+		path = strings.Replace(path, placeholder, url.PathEscape(value), -1)
+	}
+	return path
+}
+
+// paramToString converts any parameter value to its string representation.
+// This is used internally by PathParams for value conversion.
+func paramToString(value any) string {
+	switch v := value.(type) {
+	case string:
+		return v
+	case int:
+		return strconv.Itoa(v)
+	case int32:
+		return strconv.FormatInt(int64(v), 10)
+	case int64:
+		return strconv.FormatInt(v, 10)
+	case uint:
+		return strconv.FormatUint(uint64(v), 10)
+	case uint32:
+		return strconv.FormatUint(uint64(v), 10)
+	case uint64:
+		return strconv.FormatUint(v, 10)
+	case float32:
+		return strconv.FormatFloat(float64(v), 'f', -1, 32)
+	case float64:
+		return strconv.FormatFloat(v, 'f', -1, 64)
+	case bool:
+		return strconv.FormatBool(v)
+	case time.Time:
+		return v.Format(time.RFC3339)
+	default:
+		return fmt.Sprint(v)
+	}
 }

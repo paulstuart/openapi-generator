@@ -42,7 +42,7 @@ func NewTestQueryStyleFormExplodeTrueArrayStringQueryObjectParameterWithDefaults
 
 // GetValues returns the Values field value if set, zero value otherwise.
 func (o *TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter) GetValues() []string {
-	if o == nil || IsNil(o.Values) {
+	if o == nil || o.Values == nil {
 		var ret []string
 		return ret
 	}
@@ -52,7 +52,7 @@ func (o *TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter) GetValues
 // GetValuesOk returns a tuple with the Values field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter) GetValuesOk() ([]string, bool) {
-	if o == nil || IsNil(o.Values) {
+	if o == nil || o.Values == nil {
 		return nil, false
 	}
 	return o.Values, true
@@ -60,7 +60,7 @@ func (o *TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter) GetValues
 
 // HasValues returns a boolean if a field has been set.
 func (o *TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter) HasValues() bool {
-	if o != nil && !IsNil(o.Values) {
+	if o != nil && o.Values != nil {
 		return true
 	}
 
@@ -82,7 +82,7 @@ func (o TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter) MarshalJSO
 
 func (o TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Values) {
+	if o.Values != nil {
 		toSerialize["values"] = o.Values
 	}
 	return toSerialize, nil

@@ -79,7 +79,7 @@ func (o *Foo) GetDefaultBar() interface{}  {
 
 // GetMap returns the Map field value if set, zero value otherwise.
 func (o *Foo) GetMap() map[string][]time.Time {
-	if o == nil || IsNil(o.Map) {
+	if o == nil || o.Map == nil {
 		var ret map[string][]time.Time
 		return ret
 	}
@@ -89,7 +89,7 @@ func (o *Foo) GetMap() map[string][]time.Time {
 // GetMapOk returns a tuple with the Map field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Foo) GetMapOk() (*map[string][]time.Time, bool) {
-	if o == nil || IsNil(o.Map) {
+	if o == nil || o.Map == nil {
 		return nil, false
 	}
 	return o.Map, true
@@ -97,7 +97,7 @@ func (o *Foo) GetMapOk() (*map[string][]time.Time, bool) {
 
 // HasMap returns a boolean if a field has been set.
 func (o *Foo) HasMap() bool {
-	if o != nil && !IsNil(o.Map) {
+	if o != nil && o.Map != nil {
 		return true
 	}
 
@@ -123,7 +123,7 @@ func (o Foo) ToMap() (map[string]interface{}, error) {
 		toSerialize["bar"] = o.GetDefaultBar()
 	}
 	toSerialize["bar"] = o.Bar
-	if !IsNil(o.Map) {
+	if o.Map != nil {
 		toSerialize["map"] = o.Map
 	}
 

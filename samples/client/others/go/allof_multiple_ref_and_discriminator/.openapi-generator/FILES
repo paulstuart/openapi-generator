@@ -10,6 +10,7 @@ docs/FinalItem.md
 git_push.sh
 go.mod
 go.sum
+helpers_generics.go
 model_additional_data.go
 model_base_item.go
 model_final_item.go

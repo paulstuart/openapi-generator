@@ -116,16 +116,16 @@ func (a *HeaderAPIService) TestHeaderIntegerBooleanStringEnumsExecute(r ApiTestH
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.integerHeader != nil {
-		parameterAddToHeaderOrQuery(localVarHeaderParams, "integer_header", r.integerHeader, "form", "")
+		SetHeader(localVarHeaderParams, "integer_header", *r.integerHeader)
 	}
 	if r.booleanHeader != nil {
-		parameterAddToHeaderOrQuery(localVarHeaderParams, "boolean_header", r.booleanHeader, "form", "")
+		SetHeader(localVarHeaderParams, "boolean_header", *r.booleanHeader)
 	}
 	if r.stringHeader != nil {
-		parameterAddToHeaderOrQuery(localVarHeaderParams, "string_header", r.stringHeader, "form", "")
+		SetHeader(localVarHeaderParams, "string_header", *r.stringHeader)
 	}
 	if r.enumNonrefStringHeader != nil {
-		parameterAddToHeaderOrQuery(localVarHeaderParams, "enum_nonref_string_header", r.enumNonrefStringHeader, "form", "")
+		SetHeader(localVarHeaderParams, "enum_nonref_string_header", *r.enumNonrefStringHeader)
 	}
 	if r.enumRefStringHeader != nil {
 		parameterAddToHeaderOrQuery(localVarHeaderParams, "enum_ref_string_header", r.enumRefStringHeader, "form", "")

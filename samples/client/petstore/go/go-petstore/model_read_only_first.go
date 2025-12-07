@@ -42,7 +42,7 @@ func NewReadOnlyFirstWithDefaults() *ReadOnlyFirst {
 
 // GetBar returns the Bar field value if set, zero value otherwise.
 func (o *ReadOnlyFirst) GetBar() string {
-	if o == nil || IsNil(o.Bar) {
+	if o == nil || o.Bar == nil {
 		var ret string
 		return ret
 	}
@@ -52,7 +52,7 @@ func (o *ReadOnlyFirst) GetBar() string {
 // GetBarOk returns a tuple with the Bar field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ReadOnlyFirst) GetBarOk() (*string, bool) {
-	if o == nil || IsNil(o.Bar) {
+	if o == nil || o.Bar == nil {
 		return nil, false
 	}
 	return o.Bar, true
@@ -60,7 +60,7 @@ func (o *ReadOnlyFirst) GetBarOk() (*string, bool) {
 
 // HasBar returns a boolean if a field has been set.
 func (o *ReadOnlyFirst) HasBar() bool {
-	if o != nil && !IsNil(o.Bar) {
+	if o != nil && o.Bar != nil {
 		return true
 	}
 
@@ -74,7 +74,7 @@ func (o *ReadOnlyFirst) SetBar(v string) {
 
 // GetBaz returns the Baz field value if set, zero value otherwise.
 func (o *ReadOnlyFirst) GetBaz() string {
-	if o == nil || IsNil(o.Baz) {
+	if o == nil || o.Baz == nil {
 		var ret string
 		return ret
 	}
@@ -84,7 +84,7 @@ func (o *ReadOnlyFirst) GetBaz() string {
 // GetBazOk returns a tuple with the Baz field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ReadOnlyFirst) GetBazOk() (*string, bool) {
-	if o == nil || IsNil(o.Baz) {
+	if o == nil || o.Baz == nil {
 		return nil, false
 	}
 	return o.Baz, true
@@ -92,7 +92,7 @@ func (o *ReadOnlyFirst) GetBazOk() (*string, bool) {
 
 // HasBaz returns a boolean if a field has been set.
 func (o *ReadOnlyFirst) HasBaz() bool {
-	if o != nil && !IsNil(o.Baz) {
+	if o != nil && o.Baz != nil {
 		return true
 	}
 
@@ -114,10 +114,10 @@ func (o ReadOnlyFirst) MarshalJSON() ([]byte, error) {
 
 func (o ReadOnlyFirst) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Bar) {
+	if o.Bar != nil {
 		toSerialize["bar"] = o.Bar
 	}
-	if !IsNil(o.Baz) {
+	if o.Baz != nil {
 		toSerialize["baz"] = o.Baz
 	}
 	return toSerialize, nil

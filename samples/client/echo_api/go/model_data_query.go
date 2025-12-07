@@ -49,7 +49,7 @@ func NewDataQueryWithDefaults() *DataQuery {
 
 // GetSuffix returns the Suffix field value if set, zero value otherwise.
 func (o *DataQuery) GetSuffix() string {
-	if o == nil || IsNil(o.Suffix) {
+	if o == nil || o.Suffix == nil {
 		var ret string
 		return ret
 	}
@@ -59,7 +59,7 @@ func (o *DataQuery) GetSuffix() string {
 // GetSuffixOk returns a tuple with the Suffix field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DataQuery) GetSuffixOk() (*string, bool) {
-	if o == nil || IsNil(o.Suffix) {
+	if o == nil || o.Suffix == nil {
 		return nil, false
 	}
 	return o.Suffix, true
@@ -67,7 +67,7 @@ func (o *DataQuery) GetSuffixOk() (*string, bool) {
 
 // HasSuffix returns a boolean if a field has been set.
 func (o *DataQuery) HasSuffix() bool {
-	if o != nil && !IsNil(o.Suffix) {
+	if o != nil && o.Suffix != nil {
 		return true
 	}
 
@@ -81,7 +81,7 @@ func (o *DataQuery) SetSuffix(v string) {
 
 // GetText returns the Text field value if set, zero value otherwise.
 func (o *DataQuery) GetText() string {
-	if o == nil || IsNil(o.Text) {
+	if o == nil || o.Text == nil {
 		var ret string
 		return ret
 	}
@@ -91,7 +91,7 @@ func (o *DataQuery) GetText() string {
 // GetTextOk returns a tuple with the Text field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DataQuery) GetTextOk() (*string, bool) {
-	if o == nil || IsNil(o.Text) {
+	if o == nil || o.Text == nil {
 		return nil, false
 	}
 	return o.Text, true
@@ -99,7 +99,7 @@ func (o *DataQuery) GetTextOk() (*string, bool) {
 
 // HasText returns a boolean if a field has been set.
 func (o *DataQuery) HasText() bool {
-	if o != nil && !IsNil(o.Text) {
+	if o != nil && o.Text != nil {
 		return true
 	}
 
@@ -113,7 +113,7 @@ func (o *DataQuery) SetText(v string) {
 
 // GetDate returns the Date field value if set, zero value otherwise.
 func (o *DataQuery) GetDate() time.Time {
-	if o == nil || IsNil(o.Date) {
+	if o == nil || o.Date == nil {
 		var ret time.Time
 		return ret
 	}
@@ -123,7 +123,7 @@ func (o *DataQuery) GetDate() time.Time {
 // GetDateOk returns a tuple with the Date field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DataQuery) GetDateOk() (*time.Time, bool) {
-	if o == nil || IsNil(o.Date) {
+	if o == nil || o.Date == nil {
 		return nil, false
 	}
 	return o.Date, true
@@ -131,7 +131,7 @@ func (o *DataQuery) GetDateOk() (*time.Time, bool) {
 
 // HasDate returns a boolean if a field has been set.
 func (o *DataQuery) HasDate() bool {
-	if o != nil && !IsNil(o.Date) {
+	if o != nil && o.Date != nil {
 		return true
 	}
 
@@ -161,13 +161,13 @@ func (o DataQuery) ToMap() (map[string]interface{}, error) {
 	if errQuery != nil {
 		return map[string]interface{}{}, errQuery
 	}
-	if !IsNil(o.Suffix) {
+	if o.Suffix != nil {
 		toSerialize["suffix"] = o.Suffix
 	}
-	if !IsNil(o.Text) {
+	if o.Text != nil {
 		toSerialize["text"] = o.Text
 	}
-	if !IsNil(o.Date) {
+	if o.Date != nil {
 		toSerialize["date"] = o.Date
 	}
 	return toSerialize, nil

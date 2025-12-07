@@ -44,7 +44,7 @@ func NewNumberPropertiesOnlyWithDefaults() *NumberPropertiesOnly {
 
 // GetNumber returns the Number field value if set, zero value otherwise.
 func (o *NumberPropertiesOnly) GetNumber() float32 {
-	if o == nil || IsNil(o.Number) {
+	if o == nil || o.Number == nil {
 		var ret float32
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *NumberPropertiesOnly) GetNumber() float32 {
 // GetNumberOk returns a tuple with the Number field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NumberPropertiesOnly) GetNumberOk() (*float32, bool) {
-	if o == nil || IsNil(o.Number) {
+	if o == nil || o.Number == nil {
 		return nil, false
 	}
 	return o.Number, true
@@ -62,7 +62,7 @@ func (o *NumberPropertiesOnly) GetNumberOk() (*float32, bool) {
 
 // HasNumber returns a boolean if a field has been set.
 func (o *NumberPropertiesOnly) HasNumber() bool {
-	if o != nil && !IsNil(o.Number) {
+	if o != nil && o.Number != nil {
 		return true
 	}
 
@@ -76,7 +76,7 @@ func (o *NumberPropertiesOnly) SetNumber(v float32) {
 
 // GetFloat returns the Float field value if set, zero value otherwise.
 func (o *NumberPropertiesOnly) GetFloat() float32 {
-	if o == nil || IsNil(o.Float) {
+	if o == nil || o.Float == nil {
 		var ret float32
 		return ret
 	}
@@ -86,7 +86,7 @@ func (o *NumberPropertiesOnly) GetFloat() float32 {
 // GetFloatOk returns a tuple with the Float field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NumberPropertiesOnly) GetFloatOk() (*float32, bool) {
-	if o == nil || IsNil(o.Float) {
+	if o == nil || o.Float == nil {
 		return nil, false
 	}
 	return o.Float, true
@@ -94,7 +94,7 @@ func (o *NumberPropertiesOnly) GetFloatOk() (*float32, bool) {
 
 // HasFloat returns a boolean if a field has been set.
 func (o *NumberPropertiesOnly) HasFloat() bool {
-	if o != nil && !IsNil(o.Float) {
+	if o != nil && o.Float != nil {
 		return true
 	}
 
@@ -108,7 +108,7 @@ func (o *NumberPropertiesOnly) SetFloat(v float32) {
 
 // GetDouble returns the Double field value if set, zero value otherwise.
 func (o *NumberPropertiesOnly) GetDouble() float64 {
-	if o == nil || IsNil(o.Double) {
+	if o == nil || o.Double == nil {
 		var ret float64
 		return ret
 	}
@@ -118,7 +118,7 @@ func (o *NumberPropertiesOnly) GetDouble() float64 {
 // GetDoubleOk returns a tuple with the Double field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NumberPropertiesOnly) GetDoubleOk() (*float64, bool) {
-	if o == nil || IsNil(o.Double) {
+	if o == nil || o.Double == nil {
 		return nil, false
 	}
 	return o.Double, true
@@ -126,7 +126,7 @@ func (o *NumberPropertiesOnly) GetDoubleOk() (*float64, bool) {
 
 // HasDouble returns a boolean if a field has been set.
 func (o *NumberPropertiesOnly) HasDouble() bool {
-	if o != nil && !IsNil(o.Double) {
+	if o != nil && o.Double != nil {
 		return true
 	}
 
@@ -148,13 +148,13 @@ func (o NumberPropertiesOnly) MarshalJSON() ([]byte, error) {
 
 func (o NumberPropertiesOnly) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Number) {
+	if o.Number != nil {
 		toSerialize["number"] = o.Number
 	}
-	if !IsNil(o.Float) {
+	if o.Float != nil {
 		toSerialize["float"] = o.Float
 	}
-	if !IsNil(o.Double) {
+	if o.Double != nil {
 		toSerialize["double"] = o.Double
 	}
 	return toSerialize, nil

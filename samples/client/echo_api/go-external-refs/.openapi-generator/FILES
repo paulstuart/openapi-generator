@@ -30,6 +30,7 @@ docs/TestQueryStyleFormExplodeTrueArrayStringQueryObjectParameter.md
 git_push.sh
 go.mod
 go.sum
+helpers_generics.go
 model_bird.go
 model_category.go
 model_data_query.go

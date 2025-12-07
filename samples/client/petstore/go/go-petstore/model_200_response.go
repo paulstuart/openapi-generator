@@ -42,7 +42,7 @@ func NewModel200ResponseWithDefaults() *Model200Response {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *Model200Response) GetName() int32 {
-	if o == nil || IsNil(o.Name) {
+	if o == nil || o.Name == nil {
 		var ret int32
 		return ret
 	}
@@ -52,7 +52,7 @@ func (o *Model200Response) GetName() int32 {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Model200Response) GetNameOk() (*int32, bool) {
-	if o == nil || IsNil(o.Name) {
+	if o == nil || o.Name == nil {
 		return nil, false
 	}
 	return o.Name, true
@@ -60,7 +60,7 @@ func (o *Model200Response) GetNameOk() (*int32, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *Model200Response) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
+	if o != nil && o.Name != nil {
 		return true
 	}
 
@@ -74,7 +74,7 @@ func (o *Model200Response) SetName(v int32) {
 
 // GetClass returns the Class field value if set, zero value otherwise.
 func (o *Model200Response) GetClass() string {
-	if o == nil || IsNil(o.Class) {
+	if o == nil || o.Class == nil {
 		var ret string
 		return ret
 	}
@@ -84,7 +84,7 @@ func (o *Model200Response) GetClass() string {
 // GetClassOk returns a tuple with the Class field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Model200Response) GetClassOk() (*string, bool) {
-	if o == nil || IsNil(o.Class) {
+	if o == nil || o.Class == nil {
 		return nil, false
 	}
 	return o.Class, true
@@ -92,7 +92,7 @@ func (o *Model200Response) GetClassOk() (*string, bool) {
 
 // HasClass returns a boolean if a field has been set.
 func (o *Model200Response) HasClass() bool {
-	if o != nil && !IsNil(o.Class) {
+	if o != nil && o.Class != nil {
 		return true
 	}
 
@@ -114,10 +114,10 @@ func (o Model200Response) MarshalJSON() ([]byte, error) {
 
 func (o Model200Response) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
+	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
-	if !IsNil(o.Class) {
+	if o.Class != nil {
 		toSerialize["class"] = o.Class
 	}
 	return toSerialize, nil

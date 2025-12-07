@@ -280,7 +280,7 @@ func (a *BodyAPIService) TestBodyMultipartFormdataArrayOfBinaryExecute(r ApiTest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.files == nil {
+	if len(r.files) == 0 {
 		return localVarReturnValue, nil, reportError("files is required and must be specified")
 	}
 

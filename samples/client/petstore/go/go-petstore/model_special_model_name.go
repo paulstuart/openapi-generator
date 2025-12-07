@@ -41,7 +41,7 @@ func NewSpecialModelNameWithDefaults() *SpecialModelName {
 
 // GetSpecialPropertyName returns the SpecialPropertyName field value if set, zero value otherwise.
 func (o *SpecialModelName) GetSpecialPropertyName() int64 {
-	if o == nil || IsNil(o.SpecialPropertyName) {
+	if o == nil || o.SpecialPropertyName == nil {
 		var ret int64
 		return ret
 	}
@@ -51,7 +51,7 @@ func (o *SpecialModelName) GetSpecialPropertyName() int64 {
 // GetSpecialPropertyNameOk returns a tuple with the SpecialPropertyName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SpecialModelName) GetSpecialPropertyNameOk() (*int64, bool) {
-	if o == nil || IsNil(o.SpecialPropertyName) {
+	if o == nil || o.SpecialPropertyName == nil {
 		return nil, false
 	}
 	return o.SpecialPropertyName, true
@@ -59,7 +59,7 @@ func (o *SpecialModelName) GetSpecialPropertyNameOk() (*int64, bool) {
 
 // HasSpecialPropertyName returns a boolean if a field has been set.
 func (o *SpecialModelName) HasSpecialPropertyName() bool {
-	if o != nil && !IsNil(o.SpecialPropertyName) {
+	if o != nil && o.SpecialPropertyName != nil {
 		return true
 	}
 
@@ -81,7 +81,7 @@ func (o SpecialModelName) MarshalJSON() ([]byte, error) {
 
 func (o SpecialModelName) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.SpecialPropertyName) {
+	if o.SpecialPropertyName != nil {
 		toSerialize["$special[property.name]"] = o.SpecialPropertyName
 	}
 	return toSerialize, nil

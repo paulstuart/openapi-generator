@@ -10,6 +10,7 @@ docs/Object.md
 git_push.sh
 go.mod
 go.sum
+helpers_generics.go
 model_nested_object1.go
 model_nested_object2.go
 model_object.go

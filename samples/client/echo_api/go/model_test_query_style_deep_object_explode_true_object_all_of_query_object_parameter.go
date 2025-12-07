@@ -45,7 +45,7 @@ func NewTestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameterWithDe
 
 // GetSize returns the Size field value if set, zero value otherwise.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetSize() string {
-	if o == nil || IsNil(o.Size) {
+	if o == nil || o.Size == nil {
 		var ret string
 		return ret
 	}
@@ -55,7 +55,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 // GetSizeOk returns a tuple with the Size field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetSizeOk() (*string, bool) {
-	if o == nil || IsNil(o.Size) {
+	if o == nil || o.Size == nil {
 		return nil, false
 	}
 	return o.Size, true
@@ -63,7 +63,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 
 // HasSize returns a boolean if a field has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) HasSize() bool {
-	if o != nil && !IsNil(o.Size) {
+	if o != nil && o.Size != nil {
 		return true
 	}
 
@@ -77,7 +77,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Set
 
 // GetColor returns the Color field value if set, zero value otherwise.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetColor() string {
-	if o == nil || IsNil(o.Color) {
+	if o == nil || o.Color == nil {
 		var ret string
 		return ret
 	}
@@ -87,7 +87,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 // GetColorOk returns a tuple with the Color field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetColorOk() (*string, bool) {
-	if o == nil || IsNil(o.Color) {
+	if o == nil || o.Color == nil {
 		return nil, false
 	}
 	return o.Color, true
@@ -95,7 +95,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 
 // HasColor returns a boolean if a field has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) HasColor() bool {
-	if o != nil && !IsNil(o.Color) {
+	if o != nil && o.Color != nil {
 		return true
 	}
 
@@ -109,7 +109,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Set
 
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetId() int64 {
-	if o == nil || IsNil(o.Id) {
+	if o == nil || o.Id == nil {
 		var ret int64
 		return ret
 	}
@@ -119,7 +119,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetIdOk() (*int64, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil || o.Id == nil {
 		return nil, false
 	}
 	return o.Id, true
@@ -127,7 +127,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 
 // HasId returns a boolean if a field has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
+	if o != nil && o.Id != nil {
 		return true
 	}
 
@@ -141,7 +141,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Set
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetName() string {
-	if o == nil || IsNil(o.Name) {
+	if o == nil || o.Name == nil {
 		var ret string
 		return ret
 	}
@@ -151,7 +151,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
+	if o == nil || o.Name == nil {
 		return nil, false
 	}
 	return o.Name, true
@@ -159,7 +159,7 @@ func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Get
 
 // HasName returns a boolean if a field has been set.
 func (o *TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
+	if o != nil && o.Name != nil {
 		return true
 	}
 
@@ -181,16 +181,16 @@ func (o TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) Mars
 
 func (o TestQueryStyleDeepObjectExplodeTrueObjectAllOfQueryObjectParameter) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Size) {
+	if o.Size != nil {
 		toSerialize["size"] = o.Size
 	}
-	if !IsNil(o.Color) {
+	if o.Color != nil {
 		toSerialize["color"] = o.Color
 	}
-	if !IsNil(o.Id) {
+	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Name) {
+	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
 	return toSerialize, nil

@@ -45,7 +45,7 @@ func NewHasOnlyReadOnlyWithDefaults() *HasOnlyReadOnly {
 
 // GetBar returns the Bar field value if set, zero value otherwise.
 func (o *HasOnlyReadOnly) GetBar() string {
-	if o == nil || IsNil(o.Bar) {
+	if o == nil || o.Bar == nil {
 		var ret string
 		return ret
 	}
@@ -55,7 +55,7 @@ func (o *HasOnlyReadOnly) GetBar() string {
 // GetBarOk returns a tuple with the Bar field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HasOnlyReadOnly) GetBarOk() (*string, bool) {
-	if o == nil || IsNil(o.Bar) {
+	if o == nil || o.Bar == nil {
 		return nil, false
 	}
 	return o.Bar, true
@@ -63,7 +63,7 @@ func (o *HasOnlyReadOnly) GetBarOk() (*string, bool) {
 
 // HasBar returns a boolean if a field has been set.
 func (o *HasOnlyReadOnly) HasBar() bool {
-	if o != nil && !IsNil(o.Bar) {
+	if o != nil && o.Bar != nil {
 		return true
 	}
 
@@ -77,7 +77,7 @@ func (o *HasOnlyReadOnly) SetBar(v string) {
 
 // GetFoo returns the Foo field value if set, zero value otherwise.
 func (o *HasOnlyReadOnly) GetFoo() string {
-	if o == nil || IsNil(o.Foo) {
+	if o == nil || o.Foo == nil {
 		var ret string
 		return ret
 	}
@@ -87,7 +87,7 @@ func (o *HasOnlyReadOnly) GetFoo() string {
 // GetFooOk returns a tuple with the Foo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HasOnlyReadOnly) GetFooOk() (*string, bool) {
-	if o == nil || IsNil(o.Foo) {
+	if o == nil || o.Foo == nil {
 		return nil, false
 	}
 	return o.Foo, true
@@ -95,7 +95,7 @@ func (o *HasOnlyReadOnly) GetFooOk() (*string, bool) {
 
 // HasFoo returns a boolean if a field has been set.
 func (o *HasOnlyReadOnly) HasFoo() bool {
-	if o != nil && !IsNil(o.Foo) {
+	if o != nil && o.Foo != nil {
 		return true
 	}
 
@@ -117,10 +117,10 @@ func (o HasOnlyReadOnly) MarshalJSON() ([]byte, error) {
 
 func (o HasOnlyReadOnly) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Bar) {
+	if o.Bar != nil {
 		toSerialize["bar"] = o.Bar
 	}
-	if !IsNil(o.Foo) {
+	if o.Foo != nil {
 		toSerialize["foo"] = o.Foo
 	}
 

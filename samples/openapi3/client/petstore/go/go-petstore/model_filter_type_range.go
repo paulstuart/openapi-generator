@@ -44,7 +44,7 @@ func NewFilterTypeRangeWithDefaults() *FilterTypeRange {
 
 // GetData returns the Data field value if set, zero value otherwise.
 func (o *FilterTypeRange) GetData() []string {
-	if o == nil || IsNil(o.Data) {
+	if o == nil || o.Data == nil {
 		var ret []string
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *FilterTypeRange) GetData() []string {
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FilterTypeRange) GetDataOk() ([]string, bool) {
-	if o == nil || IsNil(o.Data) {
+	if o == nil || o.Data == nil {
 		return nil, false
 	}
 	return o.Data, true
@@ -62,7 +62,7 @@ func (o *FilterTypeRange) GetDataOk() ([]string, bool) {
 
 // HasData returns a boolean if a field has been set.
 func (o *FilterTypeRange) HasData() bool {
-	if o != nil && !IsNil(o.Data) {
+	if o != nil && o.Data != nil {
 		return true
 	}
 
@@ -84,7 +84,7 @@ func (o FilterTypeRange) MarshalJSON() ([]byte, error) {
 
 func (o FilterTypeRange) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Data) {
+	if o.Data != nil {
 		toSerialize["data"] = o.Data
 	}
 

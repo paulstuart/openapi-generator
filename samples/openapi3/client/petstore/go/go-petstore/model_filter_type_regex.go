@@ -44,7 +44,7 @@ func NewFilterTypeRegexWithDefaults() *FilterTypeRegex {
 
 // GetRegex returns the Regex field value if set, zero value otherwise.
 func (o *FilterTypeRegex) GetRegex() string {
-	if o == nil || IsNil(o.Regex) {
+	if o == nil || o.Regex == nil {
 		var ret string
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *FilterTypeRegex) GetRegex() string {
 // GetRegexOk returns a tuple with the Regex field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FilterTypeRegex) GetRegexOk() (*string, bool) {
-	if o == nil || IsNil(o.Regex) {
+	if o == nil || o.Regex == nil {
 		return nil, false
 	}
 	return o.Regex, true
@@ -62,7 +62,7 @@ func (o *FilterTypeRegex) GetRegexOk() (*string, bool) {
 
 // HasRegex returns a boolean if a field has been set.
 func (o *FilterTypeRegex) HasRegex() bool {
-	if o != nil && !IsNil(o.Regex) {
+	if o != nil && o.Regex != nil {
 		return true
 	}
 
@@ -84,7 +84,7 @@ func (o FilterTypeRegex) MarshalJSON() ([]byte, error) {
 
 func (o FilterTypeRegex) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Regex) {
+	if o.Regex != nil {
 		toSerialize["regex"] = o.Regex
 	}
 
